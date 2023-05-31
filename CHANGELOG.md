@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
  
-## [1.0.2-SNAPSHOT] - 2023-04-21
+## [1.6.0] - 2023-05-30
 
 ### Changed
  
