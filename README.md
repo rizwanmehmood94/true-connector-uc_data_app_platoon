@@ -39,8 +39,6 @@ The data Usage Control module supports usage policies written in the IDS Usage C
 - Restricted Number of Usages: allows data usage for n times. 
 - Personal Data: filter out the contents of the data according to the data subject´s consents. To apply this rule, the Usage Control module interacts with CaPe. **
 
-**Note: This policy pattern is still under develop, so it may occur that is not 100% workable
-
 
 ## 3  Installation Guide
 
