@@ -69,7 +69,8 @@ public final class DataAccessVerifier implements PolicyVerifier<VerificationInpu
                 PolicyPattern.N_TIMES_USAGE,
                 PolicyPattern.ROLE_RESTRICTED_USAGE,
                 PolicyPattern.PURPOSE_RESTRICTED_USAGE,
-                PolicyPattern.PERSONAL_DATA);
+                PolicyPattern.PERSONAL_DATA,
+        		PolicyPattern.PROHIBIT_ACCESS);
 
         try {
             checkForAccess(patternsToCheck, target, consumerUri, created, rules);
