@@ -41,8 +41,6 @@ The data Usage Control module supports usage policies written in the IDS Usage C
 
 **Note: This policy pattern is still under develop, so it may occur that is not 100% workable
 
-Examples of all policies can be found in [Policies_example](./Policies_example/) folder.
-
 
 ## 3  Installation Guide
 
@@ -71,6 +69,18 @@ There are 2 supported database profiles:
  - H2 (in memory db) - for faster use of UsageControl dataApp, this profile might be more suitable, since it does not require additional service, like in PostgreSQL profile.</br>
  Property file can be found in src/main/resources/application-H2.properties, and when running as SpringBoot, -Dprofile=H2
  
+### 3.4 Policy creation
+
+After starting the application, all information about API is available as Swagger documentation on: https://deh.h2020-demeter-cloud.eu/swagger.
+
+For adding and testing contract agreements, two main controllers are:
+
+ - Contract-agreement-controller - controller used for CRUD operations on contract agreements
+ - Enforce-usage-controller-agreement - controller for enforcing existing policies
+ 
+Examples of all policies can be found in [Policies_example](./Policies_example/) folder, from where all of them can be used for testing purpose. **
+
+****NOTE:** Be aware of the dates in policies example, change them according to actual dates. 
 
 ## 4 License
 
