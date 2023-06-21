@@ -69,7 +69,8 @@ There are 2 supported database profiles:
  
 ### 3.4 Policy creation
 
-After starting the application, all information about API is available as Swagger documentation on: https://deh.h2020-demeter-cloud.eu/swagger.
+After starting the application, all information about API is available as Swagger documentation on: [https://localhost:8080/platoontec/PlatoonDataUsage/1.0/swagger-ui/index.html?configUrl=/platoontec/PlatoonDataUsage/1.0/v3/api-docs/swagger-config#/](https://localhost:8080/platoontec/PlatoonDataUsage/1.0/swagger-ui/index.html?configUrl=/platoontec/PlatoonDataUsage/1.0/v3/api-docs/swagger-config#/)
+
 
 For adding and testing contract agreements, two main controllers are:
 
