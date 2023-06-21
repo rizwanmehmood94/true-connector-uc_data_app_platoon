@@ -26,20 +26,22 @@ The Data Usage Control is composed of the following components:
 ## 2. Enforcement
 
 The steps to be taken to do enforcement are the following:
-- 1.- 	Once the consumer and provider connectors have negotiated and established a Contract Agreement, this Contract Agreement is stored in the Data Usage Control by invoking the corresponding REST service.
-- 2.-	The usage control enforcement REST service is invoked before transferring the data from the Provider Connector to the Consumer Connector (parameter consuming=false), and before transferring the data from the Consumer Connector to the Data App (parameter consuming=true). This service will return the data according to the policies defined in the Contract Agreement.
+- 1. Once the consumer and provider connectors have negotiated and established a Contract Agreement, this Contract Agreement is stored in the Data Usage Control by invoking the corresponding REST service.
+- 2. The usage control enforcement REST service is invoked before transferring the data from the Provider Connector to the Consumer Connector (parameter consuming=false), and before transferring the data from the Consumer Connector to the Data App (parameter consuming=true). This service will return the data according to the policies defined in the Contract Agreement.
 
 The data Usage Control module supports usage policies written in the IDS Usage Control Language  based on ODRL. The policy patterns supported by the Data Usage Control module are the following ones:
--	Allow the Usage of the Data	: provides data usage without any restrictions.
--	Prohibit the Usage of the Data: prohibits data usage.
+- Allow the Usage of the Data: provides data usage without any restrictions.
+- Prohibit the Usage of the Data: prohibits data usage.
 - Interval-restricted Data Usage: provides data usage within a specified time interval.
 - Duration-restricted Data Usage: allows data usage for a specified time period.
-- Role-restricted Data Usage.
-- Purpose-restricted Data Usage Policy.
-- Restricted Number of Usages: allows data usage for n times.
-- Personal Data: filter out the contents of the data according to the data subject´s consents. To apply this rule, the Usage Control module interacts with CaPe.
+- Role-restricted Data Usage: allows data usage for a specified roles.
+- Purpose-restricted Data Usage Policy: allows data usage for specified purpose.
+- Restricted Number of Usages: allows data usage for n times. 
+- Personal Data: filter out the contents of the data according to the data subject´s consents. To apply this rule, the Usage Control module interacts with CaPe. **
 
+**Note: This policy pattern is still under develop, so it may occur that is not 100% workable
 
+Examples of all policies can be found in [Policies_example](./Policies_example/) folder.
 
 
 ## 3  Installation Guide
