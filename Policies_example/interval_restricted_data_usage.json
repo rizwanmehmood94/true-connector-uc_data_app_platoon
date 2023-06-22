@@ -1,0 +1,82 @@
+{
+  "@context": {
+    "ids": "https://w3id.org/idsa/core/",
+    "idsc": "https://w3id.org/idsa/code/"
+  },
+  "@type": "ids:ContractAgreement",
+  "@id": "https://w3id.org/idsa/autogen/contractAgreement/52272512-dcbd-4b15-8f1f-f409327a4a9a",
+  "ids:permission": [
+    {
+      "@type": "ids:Permission",
+      "@id": "https://w3id.org/idsa/autogen/permission/59b0a20a-11bd-4276-8341-af40c8960e98",
+      "ids:target": {
+        "@id": "http://w3id.org/engrd/connector/artifact/1"
+      },
+      "ids:title": [
+        {
+          "@value": "Interval-restricted Data Usage Example Usage Policy",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      ],
+      "ids:description": [
+        {
+          "@value": "provide-access",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      ],
+      "ids:action": [
+        {
+          "@id": "idsc:USE"
+        }
+      ],
+      "ids:constraint": [
+        {
+          "@type": "ids:Constraint",
+          "@id": "https://w3id.org/idsa/autogen/constraint/0b7c4ca7-1f9e-4e30-8fa1-7551700c1980",
+          "ids:rightOperand": {
+            "@value": "2023-06-18T00:00:00Z",
+            "@type": "xsd:dateTimeStamp"
+          },
+          "ids:operator": {
+            "@id": "idsc:AFTER"
+          },
+          "ids:leftOperand": {
+            "@id": "idsc:POLICY_EVALUATION_TIME"
+          }
+        },
+        {
+          "@type": "ids:Constraint",
+          "@id": "https://w3id.org/idsa/autogen/constraint/9f2e0197-2ad9-442b-806b5bb4951a2943",
+          "ids:rightOperand": {
+            "@value": "2023-07-18T00:00:00Z",
+            "@type": "xsd:dateTimeStamp"
+          },
+          "ids:operator": {
+            "@id": "idsc:BEFORE"
+          },
+          "ids:leftOperand": {
+            "@id": "idsc:POLICY_EVALUATION_TIME"
+          }
+        }
+      ]
+    }
+  ],
+  "ids:provider": {
+    "@id": "https://w3id.org/idsa/autogen/baseConnector/7b934432-a85e-41c5-9f65-669219dde4ea"
+  },
+  "ids:consumer": {
+    "@id": "https://w3id.org/idsa/autogen/baseConnector/7b934432-a85e-41c5-9f65-669219dde4ea"
+  },
+  "ids:contractDate": {
+    "@value": "2023-06-19T10:15:21.137Z",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  },
+  "ids:contractStart": {
+    "@value": "2023-06-19T10:15:21.137Z",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  },
+  "ids:contractEnd": {
+    "@value": "2024-06-19T10:15:21.137Z",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "@context": {
+    "ids": "https://w3id.org/idsa/core/",
+    "idsc": "https://w3id.org/idsa/code/"
+  },
+  "@type": "ids:ContractAgreement",
+  "@id": "https://w3id.org/idsa/autogen/contractAgreement/52272512-dcbd-4b15-8f1f-f409327a4b5r",
+  "ids:permission": [
+    {
+      "@type": "ids:Permission",
+      "@id": "https://w3id.org/idsa/autogen/permission/59b0a20a-11bd-4276-8341-af40c8960e98",
+      "ids:target": {
+        "@id": "http://w3id.org/engrd/connector/artifact/1"
+      },
+      "ids:title": [
+        {
+          "@value": "Duration-restricted Data Usage Example Usage Policy",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      ],
+      "ids:description": [
+        {
+          "@value": "provide-access",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      ],
+      "ids:action": [
+        {
+          "@id": "idsc:USE"
+        }
+      ],
+      "ids:constraint": [
+        {
+          "@type": "ids:Constraint",
+          "@id": "https://w3id.org/idsa/autogen/constraint/a5aa4243-432f-4360-aff4-c95da99eb266",
+          "ids:rightOperand": {
+            "@value": "PT6H",
+            "@type": "xsd:duration"
+          },
+          "ids:operator": {
+            "@id": "idsc:SHORTER_EQ"
+          },
+          "ids:leftOperand": {
+            "@id": "idsc:ELAPSED_TIME"
+          }
+        }
+      ]
+    }
+  ],
+  "ids:provider": {
+    "@id": "https://w3id.org/idsa/autogen/baseConnector/7b934432-a85e-41c5-9f65-669219dde4ea"
+  },
+  "ids:consumer": {
+    "@id": "https://w3id.org/idsa/autogen/baseConnector/7b934432-a85e-41c5-9f65-669219dde4ea"
+  },
+  "ids:contractDate": {
+    "@value": "2023-06-19T10:15:21.137Z",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  },
+  "ids:contractStart": {
+    "@value": "2023-06-19T10:15:21.137Z",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  },
+  "ids:contractEnd": {
+    "@value": "2024-06-19T10:15:21.137Z",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  }
+}

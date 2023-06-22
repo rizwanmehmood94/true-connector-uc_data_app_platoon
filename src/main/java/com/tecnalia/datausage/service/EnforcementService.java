@@ -12,6 +12,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class EnforcementService {
 	 */
 	@Autowired
 	DataAccessVerifier accessVerifier;
-	
+
 	private Serializer serializer = new Serializer();
 
 	public ResponseEntity<Object> enforce(String targetDataUri, String providerUri, String consumerUri,
@@ -151,19 +152,21 @@ public class EnforcementService {
 			LOGGER.info("Allowed access for target {}", targetDataUri);
 			return new ResponseEntity<>(filteredDataObject, HttpStatus.OK);
 		} else {
-			LOGGER.info("PDP decided to inhibit the usage: Event is not allowed according to policy for target {}", targetDataUri);
+			LOGGER.info("PDP decided to inhibit the usage: Event is not allowed according to policy for target {}",
+					targetDataUri);
 			return new ResponseEntity<>("PDP decided to inhibit the usage: Event is not allowed according to policy",
 					HttpStatus.FORBIDDEN);
 		}
 	}
-	
-	public ResponseEntity<Object> enforceAgreement(String contractAgreement, boolean consuming, String body) {
+
+	public ResponseEntity<Object> enforceAgreement(String contractAgreement, String requestedArtifact,
+			boolean consuming, String body) {
 		// Get contracts from ContractAgreement table applied to this providerURI &
 		// consumerUri
 		Optional<ContractStore> contractStoreOptional = this.contractRepository.findByContractId(contractAgreement);
 		// Get contracts that apply to targetUri and which start-end dates are valid
 		// according to current date, and get the most recent Contract
-		if(contractStoreOptional.isEmpty()) {
+		if (contractStoreOptional.isEmpty()) {
 			LOGGER.info("No valid contract found");
 			return new ResponseEntity<>("No valid contract found", HttpStatus.BAD_REQUEST);
 		}
@@ -185,10 +188,22 @@ public class EnforcementService {
 		}
 
 		// Get rules from rule table applied to the contract, targetDataUri
-		String targetDataUri = contract.getPermission().get(0).getTarget().toString();
-		String providerUri =  contractStore.getProviderId();
-		String consumerUri =  contractStore.getConsumerId();
-		
+		String targetDataUri = null;
+		if (!contract.getPermission().isEmpty()) {
+			targetDataUri = contract.getPermission().get(0).getTarget().toString();
+		} else {
+			targetDataUri = contract.getProhibition().get(0).getTarget().toString();
+		}
+
+		if (!StringUtils.equals(targetDataUri, requestedArtifact)) {
+			LOGGER.info("Transfer contract does not match the requested artifact.");
+			return new ResponseEntity<>("Transfer contract does not match the requested artifact.",
+					HttpStatus.BAD_REQUEST);
+		}
+
+		String providerUri = contractStore.getProviderId();
+		String consumerUri = contractStore.getConsumerId();
+
 		Iterable<RuleStore> ruleList = this.ruleRepository
 				.findAllByContractUuidAndTargetId(contractStore.getContractUuid(), targetDataUri);
 		ArrayList<Rule> ruleArrayList = new ArrayList<>();
@@ -200,6 +215,7 @@ public class EnforcementService {
 					Permission perm = serializer.deserialize(ruleTxt, Permission.class);
 					ruleArrayList.add(perm);
 				} else if (ruleType.compareToIgnoreCase("Prohibition") == 0) {
+
 					Prohibition prohib = serializer.deserialize(ruleTxt, Prohibition.class);
 					ruleArrayList.add((Prohibition) prohib);
 				}
@@ -209,7 +225,6 @@ public class EnforcementService {
 			}
 		}
 
-		
 		// Apply enforcement
 		boolean allowAccess = false;
 		String filteredDataObject = body;
@@ -243,7 +258,8 @@ public class EnforcementService {
 			LOGGER.info("Allowed access for target {}", targetDataUri);
 			return new ResponseEntity<>(filteredDataObject, HttpStatus.OK);
 		} else {
-			LOGGER.info("PDP decided to inhibit the usage: Event is not allowed according to policy for target {}", targetDataUri);
+			LOGGER.info("PDP decided to inhibit the usage: Event is not allowed according to policy for target {}",
+					targetDataUri);
 			return new ResponseEntity<>("PDP decided to inhibit the usage: Event is not allowed according to policy",
 					HttpStatus.FORBIDDEN);
 		}
@@ -259,14 +275,13 @@ public class EnforcementService {
 		}
 //		Date contractDate = contract.getContractDate().toGregorianCalendar().getTime();
 		Date date = new Date();
-		if (date.after(contractStart)
-				&& ((contractEnd == null) || (contractEnd != null && date.before(contractEnd)))) {
+		if (date.after(contractStart) && ((contractEnd == null) || (contractEnd != null && date.before(contractEnd)))) {
 			isValid = true;
 			LOGGER.debug("Contract is active");
 		}
 		return isValid;
 	}
-	
+
 	ContractStore getValidContracts(Iterable<ContractStore> contractList, String targetDataUri) {
 		// Get contracts that apply to targetUri and which start-end dates are valid
 		// according to current date, and get the most recent Contract
