@@ -7,7 +7,8 @@ All notable changes to this project will be documented in this file.
 
  - Add requestedArtifact as mandatory filed for enforcing policy
  - Fixed bug with prohibition policy enforcement 
- - Add http port property
+ - Add http port property (for http internal communication)
+ - PIP Dockerfile changed to match other TC images; removed pip.property file from pip docker image
 
 ## [1.6.0] - 2023-05-30
 
