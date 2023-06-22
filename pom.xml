@@ -4,7 +4,7 @@
     <artifactId>dataUsage</artifactId>
     <packaging>jar</packaging>
     <name>dataUsage</name>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.7.0</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -37,7 +37,7 @@
 		<connection>scm:git:git://github.com/Engineering-Research-and-Development/true-connector-uc_data_app_platoon.git</connection>
 		<developerConnection>scm:git:git@github.com:Engineering-Research-and-Development/true-connector-uc_data_app_platoon.git</developerConnection>
 		<url>https://github.com/Engineering-Research-and-Development/true-connector-uc_data_app_platoon.git</url>
-		<tag>HEAD</tag>
+		<tag>1.7.0</tag>
 	</scm>
 
     <build>
