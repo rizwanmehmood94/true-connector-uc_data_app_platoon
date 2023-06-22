@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.1] - 2023-06-22
+
+### Changed
+
+ - renamed maven groupId and artifactId
+ 
 ## [1.7.0] - 2023-06-21
 
 ### Changed
