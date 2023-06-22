@@ -37,7 +37,7 @@ The data Usage Control module supports usage policies written in the IDS Usage C
 - Role-restricted Data Usage: allows data usage for a specified roles.
 - Purpose-restricted Data Usage Policy: allows data usage for specified purpose.
 - Restricted Number of Usages: allows data usage for n times. 
-- Personal Data: filter out the contents of the data according to the data subject´s consents. To apply this rule, the Usage Control module interacts with CaPe. **
+- Personal Data: filter out the contents of the data according to the data subject´s consents. To apply this rule, the Usage Control module interacts with CaPe.
 
 
 ## 3  Installation Guide
@@ -54,7 +54,7 @@ docker build .
 
 This will create docker image; specific tag can also be added to the command simply by using *-t {tag:version}* 
 
-### 3.1 PIP application
+### 3.2 PIP application
 
 PIP (Policy Information Point) is required for enforcing some of the policies, like Role and Purpose restricted. This external service will be used to provide information for those policies.
 To change/configure which values connector should have (which purpose and role of the connector are) pip.property file can be configured.
@@ -89,11 +89,11 @@ services:
 
 Once docker image is up and running, [Swagger-UI](http://localhost:8085/DataUsage/Pip/1.0/swagger-ui/#/) can be used to verify that valid values will be returned.
 
-### 3.2 Running the Application
+### 3.3 Running the Application
 
 To start up the Platoon Data Usage, run the following command inside the directory "Docker_Tecnalia_DataUsage" of the docker-compose.yml file: docker-compose up -d
 
-### 3.3 Database profiles
+### 3.4 Database profiles
 
 There are 2 supported database profiles:
 
@@ -102,9 +102,9 @@ There are 2 supported database profiles:
  - H2 (in memory db) - for faster use of UsageControl dataApp, this profile might be more suitable, since it does not require additional service, like in PostgreSQL profile.</br>
  Property file can be found in src/main/resources/application-H2.properties, and when running as SpringBoot, -Dprofile=H2
  
-### 3.4 Policy creation
+### 3.5 Policy creation
 
-After starting the application, all information about API is available as Swagger documentation on: [https://localhost:8080/platoontec/PlatoonDataUsage/1.0/swagger-ui/index.html?configUrl=/platoontec/PlatoonDataUsage/1.0/v3/api-docs/swagger-config#/](https://localhost:8080/platoontec/PlatoonDataUsage/1.0/swagger-ui/index.html?configUrl=/platoontec/PlatoonDataUsage/1.0/v3/api-docs/swagger-config#/)
+After starting the application, all information about API is available as Swagger documentation on: [PlatoonDataUsage SwaggerUI](https://localhost:8080/platoontec/PlatoonDataUsage/1.0/swagger-ui/index.html?configUrl=/platoontec/PlatoonDataUsage/1.0/v3/api-docs/swagger-config#/)
 
 
 For adding and testing contract agreements, two main controllers are:
@@ -112,9 +112,9 @@ For adding and testing contract agreements, two main controllers are:
  - Contract-agreement-controller - controller used for CRUD operations on contract agreements
  - Enforce-usage-controller-agreement - controller for enforcing existing policies
  
-Examples of all policies can be found in [Policies_example](./Policies_example/) folder, from where all of them can be used for testing purpose. **
+Examples of all policies can be found in [Policies_example](./Policies_example/) folder, from where all of them can be used for testing purpose.
 
-****NOTE:** Be aware of the dates in policies example, change them according to actual dates. 
+**NOTE:** Be aware of the dates in policies example, change them according to actual dates. 
 
 ## 4 License
 
