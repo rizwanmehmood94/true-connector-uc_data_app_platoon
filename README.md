@@ -54,6 +54,41 @@ docker build .
 
 This will create docker image; specific tag can also be added to the command simply by using *-t {tag:version}* 
 
+### 3.1 PIP application
+
+PIP (Policy Information Point) is required for enforcing some of the policies, like Role and Purpose restricted. This external service will be used to provide information for those policies.
+To change/configure which values connector should have (which purpose and role of the connector are) pip.property file can be configured.
+
+```
+pip.role=http://example.com/ids-role:riskManager
+pip.purpose=http://example.com/ids-purpose:Marketing
+pip.purposeName=Marketing
+```
+
+Following [Dockerfile](Docker_Tecnalia_DataUsage\pip\Dockerfile) can be used to build docker image, simply by invoking:
+
+```
+docker build --no-cache -t {tag:version}  . 
+```
+
+and when running docker image, be sure to provide volume containing pip.properties file, since that file is mandatory for this service. Simple docker-compose service can be like:
+
+```
+version: '3.5'
+
+services:
+   pip:
+    image: rdlabengpa/ids_uc_data_app_platoon_pip:v1.0.0
+    container_name: 'pip-container'
+    ports:
+      - 8085:8085
+    volumes:
+      - ./etc:/etc
+      
+```
+
+Once docker image is up and running, [Swagger-UI](http://localhost:8085/DataUsage/Pip/1.0/swagger-ui/#/) can be used to verify that valid values will be returned.
+
 ### 3.2 Running the Application
 
 To start up the Platoon Data Usage, run the following command inside the directory "Docker_Tecnalia_DataUsage" of the docker-compose.yml file: docker-compose up -d
