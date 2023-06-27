@@ -1,12 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.7.1] - 2023-06-27
+## [1.7.1] - 2023-06-22
 
 ### Changed
-	
-  - Add checking if policy uploaded policy is compatible with UC
 
+ - renamed maven groupId and artifactId
+ - add checking uploaded policy is compatible with UC
+  
 ## [1.7.0] - 2023-06-21
 
 ### Changed
