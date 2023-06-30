@@ -32,13 +32,14 @@ The steps to be taken to do enforcement are the following:
 The data Usage Control module supports usage policies written in the IDS Usage Control Language  based on ODRL. The policy patterns supported by the Data Usage Control module are the following ones:
 - Allow the Usage of the Data: provides data usage without any restrictions.
 - Prohibit the Usage of the Data: prohibits data usage.
-- Interval-restricted Data Usage: provides data usage within a specified time interval.
-- Duration-restricted Data Usage: allows data usage for a specified time period.
-- Role-restricted Data Usage: allows data usage for a specified roles.
-- Purpose-restricted Data Usage Policy: allows data usage for specified purpose.
+- Interval-restricted Data Usage: provides data usage within a defined time interval. (interval defined with start end end date)
+- Duration-restricted Data Usage: allows data usage for a defined time period. (duration calculated from contract start date)
+- Role-restricted Data Usage: allows data usage for a defined role. (for example http://example.com/ids-role:riskManager)
+- Purpose-restricted Data Usage Policy: allows data usage for defined purpose. (for example http://example.com/ids-purpose:Marketing)
 - Restricted Number of Usages: allows data usage for n times. 
 - Personal Data: filter out the contents of the data according to the data subject´s consents. To apply this rule, the Usage Control module interacts with CaPe.
 
+**NOTE:** In case of trying to apply policy pattern that is not supported by Data Usage Control module, error 400 - Policy is not supported will be returned.
 
 ## 3  Installation Guide
 
