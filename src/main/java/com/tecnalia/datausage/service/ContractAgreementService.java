@@ -5,6 +5,7 @@
  */
 package com.tecnalia.datausage.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,7 +27,9 @@ import com.tecnalia.datausage.repository.RuleRepository;
 import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.Permission;
 import de.fraunhofer.iais.eis.Prohibition;
+import de.fraunhofer.iais.eis.Rule;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import io.dataspaceconnector.utils.RuleUtils;
 
 /**
  *
@@ -75,6 +78,13 @@ public class ContractAgreementService {
 			// if exists update
 			String message = "";
 			if (bCheckExistsContract.isPresent()) {
+				Rule rule = serializer.deserialize(policy.toString(), Rule.class);
+				final var pattern = RuleUtils.getPatternByRule(rule);
+
+				if (pattern == null) {
+					return new ResponseEntity<String>("Updated policy is not supported, old one is in use",
+							HttpStatus.BAD_REQUEST);
+				}
 
 				message = "Contract Agreement has been updated";
 				log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
@@ -88,6 +98,12 @@ public class ContractAgreementService {
 
 			// insert new policy
 			else {
+				Rule rule = serializer.deserialize(policy.toString(), Rule.class);
+				final var pattern = RuleUtils.getPatternByRule(rule);
+
+				if (pattern == null) {
+					return new ResponseEntity<String>("Policy is not supported", HttpStatus.BAD_REQUEST);
+				}
 				message = "Contract Agreement has been added";
 				contractUuid = UUID.randomUUID();
 				log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
