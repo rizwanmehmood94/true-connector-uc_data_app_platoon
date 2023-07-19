@@ -14,7 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 		"io.dataspaceconnector.services.usagecontrol" })
 public class Swagger2SpringBoot {
 
-	@Value("${http.port}")
+	//@Value("${http.port}") Error reading the port sometimes
 	private int httpPort;
 
 	public static void main(String[] args) throws Exception {

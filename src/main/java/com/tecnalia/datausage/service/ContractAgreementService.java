@@ -5,13 +5,14 @@
  */
 package com.tecnalia.datausage.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.apache.tomcat.util.json.JSONParser;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,7 @@ import com.tecnalia.datausage.repository.RuleRepository;
 import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.Permission;
 import de.fraunhofer.iais.eis.Prohibition;
-import de.fraunhofer.iais.eis.Rule;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import io.dataspaceconnector.utils.RuleUtils;
 
 /**
  *
@@ -46,6 +45,8 @@ public class ContractAgreementService {
 	@Autowired
 
 	private RuleRepository ruleRepository;
+
+	private String profile="http://example.com/odrl:profile";
 
 	@Autowired
 	public ContractAgreementService(ContractRepository contractRepository, RuleRepository ruleRepository)
@@ -68,6 +69,7 @@ public class ContractAgreementService {
 
 		try {
 
+			System.out.println("Policy--->"+ policy);
 			Serializer serializer = new Serializer();
 			Contract contract = serializer.deserialize(policy, Contract.class);
 
@@ -78,13 +80,6 @@ public class ContractAgreementService {
 			// if exists update
 			String message = "";
 			if (bCheckExistsContract.isPresent()) {
-				Rule rule = serializer.deserialize(policy.toString(), Rule.class);
-				final var pattern = RuleUtils.getPatternByRule(rule);
-
-				if (pattern == null) {
-					return new ResponseEntity<String>("Updated policy is not supported, old one is in use",
-							HttpStatus.BAD_REQUEST);
-				}
 
 				message = "Contract Agreement has been updated";
 				log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
@@ -92,18 +87,12 @@ public class ContractAgreementService {
 				contractStore.setContractAsString(policy);
 				contractStore.setConsumerId(contract.getConsumer().toString());
 				contractStore.setProviderId(contract.getProvider().toString());
-				this.contractRepository.saveAndFlush(contractStore);
+				this.contractRepository.saveAndFlush(setProfile(policy,contractStore));
 
 			}
 
 			// insert new policy
 			else {
-				Rule rule = serializer.deserialize(policy.toString(), Rule.class);
-				final var pattern = RuleUtils.getPatternByRule(rule);
-
-				if (pattern == null) {
-					return new ResponseEntity<String>("Policy is not supported", HttpStatus.BAD_REQUEST);
-				}
 				message = "Contract Agreement has been added";
 				contractUuid = UUID.randomUUID();
 				log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
@@ -113,7 +102,7 @@ public class ContractAgreementService {
 				contractStore.setContractAsString(policy);
 				contractStore.setConsumerId(contract.getConsumer().toString());
 				contractStore.setProviderId(contract.getProvider().toString());
-				this.contractRepository.saveAndFlush(contractStore);
+				this.contractRepository.saveAndFlush(setProfile(policy,contractStore));
 
 			}
 
@@ -220,6 +209,16 @@ public class ContractAgreementService {
 
 		// return this.repository.findAll();
 
+	}
+
+	private ContractStore setProfile(String jsonString, ContractStore contractStore) {
+		JSONObject jsonObject = new JSONObject(jsonString);
+		JSONObject profileObj = jsonObject.optJSONObject("ids:profile");
+
+		if (profileObj != null && profileObj.has("@id")) {
+			return contractStore.setProfile(profileObj.getString("@id"));
+		}
+		return contractStore;
 	}
 
 }

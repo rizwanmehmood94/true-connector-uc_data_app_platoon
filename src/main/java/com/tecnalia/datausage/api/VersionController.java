@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping({ "/about" })
 public class VersionController {
 
-	@Autowired
+
 	BuildProperties buildProperties;
 
 	@GetMapping("/version")

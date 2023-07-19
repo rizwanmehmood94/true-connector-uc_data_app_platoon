@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Fraunhofer Institute for Software and Systems Engineering
+ * Copyright 2020-2022 Fraunhofer Institute for Software and Systems Engineering
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,49 +15,41 @@
  */
 package io.dataspaceconnector.services.usagecontrol;
 
-import de.fraunhofer.iais.eis.Rule;
+import de.fraunhofer.iais.eis.ContractAgreement;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.net.URI;
 import java.util.Optional;
 
-//TECNALIA-ICT-OPTIMA: Different class attributes: 
-// - consumerUri instead of issuerConnector
-// - created: ContractAgreement start date
-// - rules instead of agreement
+/**
+ * A DTO for information required to decide if data provision should be allowed.
+ */
 @AllArgsConstructor
 @Data
 @RequiredArgsConstructor
-public class VerificationInput {
+public class ProvisionVerificationInput {
 
     /**
      * The id of the targeted artifact.
      */
-    String target;
+    private URI target;
 
     /**
-     * The list of rules.
+     * The id of the issuing connector.
      */
-    ArrayList<Rule> rules;
-    
+    private URI issuerConnector;
+
     /**
-     * The id of the consumer connector.
+     * The contract agreements for policy verification.
      */
-    String consumerUri;
-    
-    /**
-     * The start date of the ContractAgreement.
-     */
-    Date created;
+    private ContractAgreement agreement;
 
     /**
      * The security profile.
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<SecurityProfile> securityProfile;
-     
 }

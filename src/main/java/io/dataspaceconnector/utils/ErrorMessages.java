@@ -195,9 +195,16 @@ public enum ErrorMessages {
     /**
      * Data has been accessed by an invalid purpose.
      */
-    DATA_ACCESS_INVALID_PURPOSE("Data access by invalid purpose.");  
-    
-    
+    DATA_ACCESS_INVALID_PURPOSE("Data access by invalid purpose."),
+
+
+    //TECNALIA-ICT-OPTIMA: New error message.
+    /**
+     * Data has been accessed by an invalid security purpose.
+     */
+    DATA_ACCESS_SECURITY_PURPOSE("Data access by invalid security profile.");
+
+
     /**
      * Holds the enums string.
      */

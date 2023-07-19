@@ -39,6 +39,9 @@ public class ContractStore {
 	@JsonProperty("providerId")
 	private String providerId;
 
+	@JsonProperty("profile")
+	private String profile;
+
 	public ContractStore contractAsString(String contractAsString) {
 		this.contractAsString = contractAsString;
 		return this;
@@ -145,6 +148,16 @@ public class ContractStore {
 		this.providerId = providerId;
 	}
 
+	@Schema(description = "")
+	public String getProfile() {
+		return profile;
+	}
+
+	public ContractStore setProfile(String profile) {
+		this.profile = profile;
+		return this;
+	}
+
 	@Override
 	public boolean equals(java.lang.Object o) {
 		if (this == o) {
@@ -157,14 +170,14 @@ public class ContractStore {
 		return Objects.equals(this.contractAsString, contractStore.contractAsString)
 				&& Objects.equals(this.contractUuid, contractStore.contractUuid)
 				&& Objects.equals(this.contractId, contractStore.contractId) &&
-				// Objects.equals(this.targetId, contractStore.targetId) &&
+				 Objects.equals(this.profile, contractStore.profile) &&
 				Objects.equals(this.consumerId, contractStore.consumerId)
 				&& Objects.equals(this.providerId, contractStore.providerId);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(contractAsString, contractUuid, contractId, consumerId, providerId);
+		return Objects.hash(contractAsString, contractUuid, contractId, consumerId, providerId,profile);
 	}
 
 	@Override
@@ -178,6 +191,7 @@ public class ContractStore {
 		// sb.append(" targetId: ").append(toIndentedString(targetId)).append("\n");
 		sb.append("    consumerId: ").append(toIndentedString(consumerId)).append("\n");
 		sb.append("    providerId: ").append(toIndentedString(providerId)).append("\n");
+		sb.append("    profile: ").append(toIndentedString(profile)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
