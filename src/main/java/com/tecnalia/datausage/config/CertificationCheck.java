@@ -16,7 +16,7 @@ public class CertificationCheck {
 
 	private static final Logger logger = LoggerFactory.getLogger(CertificationCheck.class);
 
-	private static final String[] CERTIFIED_VERSION = { "1.7.2" };
+	private static final String[] CERTIFIED_VERSION = { "1.7.3" };
 	@PostConstruct
 	public void checkIfVerionsIsCertified() {
 		String version = Objects.requireNonNullElse(Swagger2SpringBoot.class.getPackage().getImplementationVersion(), "");
