@@ -5,7 +5,7 @@
     <packaging>jar</packaging>
     <name>TRUE Connector Usage Data App</name>
 	<description>TRUE Connector Usage Data App - policy enforcement</description>
-    <version>1.7.4</version>
+    <version>1.7.5-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -38,7 +38,7 @@
 		<connection>scm:git:git://github.com/Engineering-Research-and-Development/true-connector-uc_data_app_platoon.git</connection>
 		<developerConnection>scm:git:git@github.com:Engineering-Research-and-Development/true-connector-uc_data_app_platoon.git</developerConnection>
 		<url>https://github.com/Engineering-Research-and-Development/true-connector-uc_data_app_platoon.git</url>
-		<tag>1.7.4</tag>
+		<tag>HEAD</tag>
 	</scm>
 
     <build>
