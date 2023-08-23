@@ -343,7 +343,7 @@ public final class RuleUtils {
      */
     public static URI getAllowedSecurityRestriction(Rule rule) {
         Constraint constraint = (Constraint)rule.getConstraint().get(0);
-        URI allowedSecurityRestriction = constraint.getRightOperandReference();
+        URI allowedSecurityRestriction = URI.create(constraint.getRightOperand().getValue());
         return allowedSecurityRestriction;
     }
 

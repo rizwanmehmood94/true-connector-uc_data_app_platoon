@@ -21,7 +21,7 @@ public class RestrictAccessLocationTest extends AbstracPolicyTest {
 	public void createRestrictAccessLocationAgreementTest() throws IOException {
 		ContractAgreement ca = createAgreement();
 		assertNotNull(ca);
-//		System.out.println(serializer.serialize(ca));
+		System.out.println(serializer.serialize(ca));
 	}
 
 	private ContractAgreement createAgreement() {

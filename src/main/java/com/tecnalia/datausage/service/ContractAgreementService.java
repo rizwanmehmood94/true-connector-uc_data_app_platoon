@@ -5,19 +5,22 @@
  */
 package com.tecnalia.datausage.service;
 
+import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import com.tecnalia.datausage.utils.HttpUtils;
+import de.fraunhofer.iais.eis.Connector;
 import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
 import com.tecnalia.datausage.model.ContractStore;
@@ -29,196 +32,218 @@ import de.fraunhofer.iais.eis.Contract;
 import de.fraunhofer.iais.eis.Permission;
 import de.fraunhofer.iais.eis.Prohibition;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import org.springframework.web.client.RestTemplate;
 
 /**
- *
  * @author root
  */
 
 @Service
 public class ContractAgreementService {
 
-	private static final Logger log = LoggerFactory.getLogger(ContractAgreementService.class);
+    private static final Logger log = LoggerFactory.getLogger(ContractAgreementService.class);
 
-	@Autowired
-	private ContractRepository contractRepository;
-	@Autowired
+    @Autowired
+    private ContractRepository contractRepository;
+    @Autowired
 
-	private RuleRepository ruleRepository;
+    private RuleRepository ruleRepository;
 
-	private String profile="http://example.com/odrl:profile";
+    private HttpUtils httpUtils;
+    private SelfDescriptionServiceImpl getSelfDescription;
 
-	@Autowired
-	public ContractAgreementService(ContractRepository contractRepository, RuleRepository ruleRepository)
-			throws IllegalArgumentException {
-		// public PolicyService(OdrlPolicyRepo repository) throws
-		// IllegalArgumentException {
 
-		if (contractRepository == null)
-			throw new IllegalArgumentException("The Contract Repo cannot be null.");
+    @Autowired
+    public ContractAgreementService(ContractRepository contractRepository, RuleRepository ruleRepository, HttpUtils httpUtils, SelfDescriptionServiceImpl getSelfDescription)
+            throws IllegalArgumentException {
+        // public PolicyService(OdrlPolicyRepo repository) throws
+        // IllegalArgumentException {
 
-		this.ruleRepository = ruleRepository;
-		if (ruleRepository == null)
-			throw new IllegalArgumentException("The Contract Repo cannot be null.");
+        if (contractRepository == null)
+            throw new IllegalArgumentException("The Contract Repo cannot be null.");
 
-		this.ruleRepository = ruleRepository;
-	}
+        this.ruleRepository = ruleRepository;
+        if (ruleRepository == null)
+            throw new IllegalArgumentException("The Contract Repo cannot be null.");
 
-	@Transactional
-	public ResponseEntity<String> addOrUpdate(String policy) {
+        this.ruleRepository = ruleRepository;
+        this.httpUtils = httpUtils;
+        this.getSelfDescription = getSelfDescription;
 
-		try {
+    }
 
-			System.out.println("Policy--->"+ policy);
-			Serializer serializer = new Serializer();
-			Contract contract = serializer.deserialize(policy, Contract.class);
+    @Transactional
+    public ResponseEntity<String> addOrUpdate(String policy) {
 
-			Optional<ContractStore> bCheckExistsContract = this.contractRepository
-					.findByContractId(contract.getId().toString());
-			ContractStore contractStore;
-			UUID contractUuid = null;
-			// if exists update
-			String message = "";
-			if (bCheckExistsContract.isPresent()) {
+        try {
 
-				message = "Contract Agreement has been updated";
-				log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
-				contractStore = (ContractStore) bCheckExistsContract.get();
-				contractStore.setContractAsString(policy);
-				contractStore.setConsumerId(contract.getConsumer().toString());
-				contractStore.setProviderId(contract.getProvider().toString());
-				this.contractRepository.saveAndFlush(setProfile(policy,contractStore));
+            System.out.println("Policy--->" + policy);
+            Serializer serializer = new Serializer();
+            Contract contract = serializer.deserialize(policy, Contract.class);
 
-			}
+            Optional<ContractStore> bCheckExistsContract = this.contractRepository
+                    .findByContractId(contract.getId().toString());
+            ContractStore contractStore;
+            UUID contractUuid = null;
+            // if exists update
+            String message = "";
+            if (bCheckExistsContract.isPresent()) {
 
-			// insert new policy
-			else {
-				message = "Contract Agreement has been added";
-				contractUuid = UUID.randomUUID();
-				log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
-				contractStore = new ContractStore();
-				contractStore.contractUuid(contractUuid.toString());
-				contractStore.setContractId(contract.getId().toString());
-				contractStore.setContractAsString(policy);
-				contractStore.setConsumerId(contract.getConsumer().toString());
-				contractStore.setProviderId(contract.getProvider().toString());
-				this.contractRepository.saveAndFlush(setProfile(policy,contractStore));
+                message = "Contract Agreement has been updated";
+                log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
+                contractStore = (ContractStore) bCheckExistsContract.get();
+                contractStore.setContractAsString(policy);
+                contractStore.setConsumerId(contract.getConsumer().toString());
+                contractStore.setProviderId(contract.getProvider().toString());
+                this.contractRepository.saveAndFlush(setProfile(policy, contractStore));
 
-			}
+            }
 
-			// update rules
-			Iterable<RuleStore> ruleList = this.ruleRepository.findAllByContractId(contract.getId().toString());
+            // insert new policy
+            else {
+                message = "Contract Agreement has been added";
+                contractUuid = UUID.randomUUID();
+                log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
+                contractStore = new ContractStore();
+                contractStore.contractUuid(contractUuid.toString());
+                contractStore.setContractId(contract.getId().toString());
+                contractStore.setContractAsString(policy);
+                if (contract.getConsumer() != null) {
+                    contractStore.setConsumerId(contract.getConsumer().toString());
+                } else {
+                    return new ResponseEntity<String>("Consumer URI paramater has not been added", HttpStatus.BAD_REQUEST);
+                }
 
-			// if exists delete
-			if (ruleList.iterator().hasNext()) {
+                contractStore.setProviderId(contract.getProvider().toString());
+                this.contractRepository.saveAndFlush(setProfile(policy, contractStore));
 
-				List<RuleStore> ruleStores = this.ruleRepository.deleteByContractId(contract.getId().toString());
-				log.info("PolicyService:::policyId :" + ruleStores.size());
+            }
 
-			}
+            // update rules
+            Iterable<RuleStore> ruleList = this.ruleRepository.findAllByContractId(contract.getId().toString());
 
-			if ((contract.getProhibition() != null) && (contract.getProhibition().size() != 0)) {
-				// create rules
-				for (Prohibition prohibition : contract.getProhibition()) {
-					UUID ruleUuid = UUID.randomUUID();
+            // if exists delete
+            if (ruleList.iterator().hasNext()) {
 
-					RuleStore ruleStore = new RuleStore();
-					ruleStore.setContractUuid(contractStore.getContractUuid());
-					ruleStore.setRuleUuid(ruleUuid.toString());
-					ruleStore.setContractId(contract.getId().toString());
-					ruleStore.setRuleId(prohibition.getId().toString());
-					ruleStore.setTargetId(prohibition.getTarget().toString());
-					String prohibitionJson = serializer.serialize(prohibition);
-					ruleStore.setRuleContent(prohibitionJson);
-					this.ruleRepository.saveAndFlush(ruleStore);
-				}
+                List<RuleStore> ruleStores = this.ruleRepository.deleteByContractId(contract.getId().toString());
+                log.info("PolicyService:::policyId :" + ruleStores.size());
 
-			} else if ((contract.getPermission() != null) && (contract.getPermission().size() != 0)) {
+            }
 
-				for (Permission permission : contract.getPermission()) {
+            if ((contract.getProhibition() != null) && (contract.getProhibition().size() != 0)) {
+                // create rules
+                for (Prohibition prohibition : contract.getProhibition()) {
+                    UUID ruleUuid = UUID.randomUUID();
 
-					UUID ruleUuid = UUID.randomUUID();
-					RuleStore ruleStore = new RuleStore();
-					ruleStore.setContractUuid(contractStore.getContractUuid());
-					ruleStore.setContractId(contract.getId().toString());
-					ruleStore.setRuleUuid(ruleUuid.toString());
-					ruleStore.setRuleId(permission.getId().toString());
-					ruleStore.setTargetId(permission.getTarget().toString());
-					String permissionJson = serializer.serialize(permission);
-					ruleStore.setRuleContent(permissionJson);
-					this.ruleRepository.saveAndFlush(ruleStore);
-				}
+                    RuleStore ruleStore = new RuleStore();
+                    ruleStore.setContractUuid(contractStore.getContractUuid());
+                    ruleStore.setRuleUuid(ruleUuid.toString());
+                    ruleStore.setContractId(contract.getId().toString());
+                    ruleStore.setRuleId(prohibition.getId().toString());
+                    ruleStore.setTargetId(prohibition.getTarget().toString());
+                    String prohibitionJson = serializer.serialize(prohibition);
+                    ruleStore.setRuleContent(prohibitionJson);
+                    this.ruleRepository.saveAndFlush(ruleStore);
+                }
 
-			}
-			return new ResponseEntity<String>(message, HttpStatus.OK);
+            } else if ((contract.getPermission() != null) && (contract.getPermission().size() != 0)) {
 
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+                for (Permission permission : contract.getPermission()) {
 
-			return new ResponseEntity<String>("Policy has not been added", HttpStatus.BAD_REQUEST);
+                    UUID ruleUuid = UUID.randomUUID();
+                    RuleStore ruleStore = new RuleStore();
+                    ruleStore.setContractUuid(contractStore.getContractUuid());
+                    ruleStore.setContractId(contract.getId().toString());
+                    ruleStore.setRuleUuid(ruleUuid.toString());
+                    ruleStore.setRuleId(permission.getId().toString());
+                    ruleStore.setTargetId(permission.getTarget().toString());
+                    String permissionJson = serializer.serialize(permission);
+                    ruleStore.setRuleContent(permissionJson);
+                    this.ruleRepository.saveAndFlush(ruleStore);
+                }
 
-		}
+            }
+            return new ResponseEntity<String>(message, HttpStatus.OK);
 
-	}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
 
-	@Transactional
-	public ResponseEntity<String> deletePolicy(String contractUuid) {
-		try {
+            return new ResponseEntity<String>("Policy has not been added", HttpStatus.BAD_REQUEST);
 
-			Optional<ContractStore> bCheckExistsContract = this.contractRepository.findByContractUuid(contractUuid);
+        }
 
-			// if exists delete
-			if (bCheckExistsContract.isPresent()) {
+    }
 
-				log.info("PolicyService:::deleting policy :" + contractUuid);
+    @Transactional
+    public ResponseEntity<String> deletePolicy(String contractUuid) {
+        try {
 
-				List<RuleStore> ruleStores = this.ruleRepository.deleteByContractUuid(contractUuid);
-				log.info("PolicyService:::policyId :" + ruleStores.size());
+            Optional<ContractStore> bCheckExistsContract = this.contractRepository.findByContractUuid(contractUuid);
 
-				if (ruleStores.size() != 0) {
-					Long num = this.contractRepository.deleteByContractUuid(contractUuid);
-					log.info("PolicyService:::policyId :" + num);
-				}
-				return new ResponseEntity<String>("Contract Agreement has been deleted", HttpStatus.OK);
-			} else
-				return new ResponseEntity<String>("Contract Agreement does not exists", HttpStatus.NOT_FOUND);
-		} catch (Exception e) {
+            // if exists delete
+            if (bCheckExistsContract.isPresent()) {
 
-			return new ResponseEntity<String>("An error happened during contract agreement deletion process",
-					HttpStatus.BAD_REQUEST);
-		}
+                log.info("PolicyService:::deleting policy :" + contractUuid);
 
-	}
+                List<RuleStore> ruleStores = this.ruleRepository.deleteByContractUuid(contractUuid);
+                log.info("PolicyService:::policyId :" + ruleStores.size());
 
-	public ResponseEntity<List<ContractStore>> getAllOdrlPolicyPersistence() {
+                if (ruleStores.size() != 0) {
+                    Long num = this.contractRepository.deleteByContractUuid(contractUuid);
+                    log.info("PolicyService:::policyId :" + num);
+                }
+                return new ResponseEntity<String>("Contract Agreement has been deleted", HttpStatus.OK);
+            } else
+                return new ResponseEntity<String>("Contract Agreement does not exists", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
 
-		log.info("PolicyService:::getAllOdrlPolicyPersistence:");
-		try {
-			return new ResponseEntity<List<ContractStore>>(this.contractRepository.findAll(), HttpStatus.OK);
-			// return new
-			// ResponseEntity<List<OdrlPolicy>>(this.repository.getPolicyAndPolicyString(),
-			// HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<List<ContractStore>>(this.contractRepository.findAll(), HttpStatus.BAD_REQUEST);
-			// return new
-			// ResponseEntity<List<OdrlPolicy>>(this.repository.getPolicyAndPolicyString(),
-			// HttpStatus.OK);
-		}
+            return new ResponseEntity<String>("An error happened during contract agreement deletion process",
+                    HttpStatus.BAD_REQUEST);
+        }
 
-		// return this.repository.findAll();
+    }
 
-		// return this.repository.findAll();
+    public ResponseEntity<List<ContractStore>> getAllOdrlPolicyPersistence() {
 
-	}
+        log.info("PolicyService:::getAllOdrlPolicyPersistence:");
+        try {
+            return new ResponseEntity<List<ContractStore>>(this.contractRepository.findAll(), HttpStatus.OK);
+            // return new
+            // ResponseEntity<List<OdrlPolicy>>(this.repository.getPolicyAndPolicyString(),
+            // HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<List<ContractStore>>(this.contractRepository.findAll(), HttpStatus.BAD_REQUEST);
+            // return new
+            // ResponseEntity<List<OdrlPolicy>>(this.repository.getPolicyAndPolicyString(),
+            // HttpStatus.OK);
+        }
 
-	private ContractStore setProfile(String jsonString, ContractStore contractStore) {
-		JSONObject jsonObject = new JSONObject(jsonString);
-		JSONObject profileObj = jsonObject.optJSONObject("ids:profile");
+        // return this.repository.findAll();
 
-		if (profileObj != null && profileObj.has("@id")) {
-			return contractStore.setProfile(profileObj.getString("@id"));
-		}
-		return contractStore;
-	}
+        // return this.repository.findAll();
+
+    }
+
+    private ContractStore setProfile(String jsonString, ContractStore contractStore) throws URISyntaxException {
+        try {
+            Connector connector = this.getSelfDescription.getSelfDescription();
+            if (connector != null && connector.getSecurityProfile() != null & !connector.getSecurityProfile().toString().isEmpty()) {
+                contractStore.setProfile(connector.getSecurityProfile().toString());
+                return contractStore;
+            }
+
+            /*JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject profileObj = jsonObject.optJSONObject("ids:profile");
+
+            if (profileObj != null && profileObj.has("@id")) {
+                return contractStore.setProfile(profileObj.getString("@id"));
+            }*/
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return contractStore;
+    }
+
 
 }

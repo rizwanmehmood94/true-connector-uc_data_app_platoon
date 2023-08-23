@@ -119,7 +119,7 @@ public class EnforcementService {
 		// Apply enforcement
 		boolean allowAccess = false;
 		String filteredDataObject = body;
-		final var input = new VerificationInput(targetDataUri, ruleArrayList, consumerUri, validContractStart,null);
+		final var input = new VerificationInput(targetDataUri, ruleArrayList, consumerUri, validContractStart,getSecurityProfile(validContractStore.getProfile()));
 		if (consuming) {
 			// For each rule, apply enforcement
 			if (accessVerifier.verify(input) == VerificationResult.ALLOWED) {
@@ -367,21 +367,19 @@ public class EnforcementService {
 	 * @return A security profile, if the value matches the provided enums.
 	 */
 	public static Optional<SecurityProfile> getSecurityProfile(final String input) {
-		switch (input) {
-			case "idsc:BASE_SECURITY_PROFILE":
-			case "BASE_SECURITY_PROFILE":
-			case "idsc:BASE_CONNECTOR_SECURITY_PROFILE":
-				return Optional.of(SecurityProfile.BASE_SECURITY_PROFILE);
-			case "idsc:TRUST_SECURITY_PROFILE":
-			case "TRUST_SECURITY_PROFILE":
-			case "idsc:TRUST_CONNECTOR_SECURITY_PROFILE":
-				return Optional.of(SecurityProfile.TRUST_SECURITY_PROFILE);
-			case "idsc:TRUST_PLUS_SECURITY_PROFILE":
-			case "TRUST_PLUS_SECURITY_PROFILE":
-			case "idsc:TRUST_PLUS_CONNECTOR_SECURITY_PROFILE":
-				return Optional.of(SecurityProfile.TRUST_PLUS_SECURITY_PROFILE);
-			default:
-				return Optional.empty();
+
+
+		if (input.contains("BASE_SECURITY_PROFILE") ||
+				input.contains("BASE_CONNECTOR_SECURITY_PROFILE")) {
+			return Optional.of(SecurityProfile.BASE_SECURITY_PROFILE);
+		} else if (input.contains("TRUST_SECURITY_PROFILE") ||
+				input.contains("TRUST_CONNECTOR_SECURITY_PROFILE")) {
+			return Optional.of(SecurityProfile.TRUST_SECURITY_PROFILE);
+		} else if (input.contains("TRUST_PLUS_SECURITY_PROFILE") ||
+				input.contains("TRUST_PLUS_CONNECTOR_SECURITY_PROFILE")) {
+			return Optional.of(SecurityProfile.TRUST_PLUS_SECURITY_PROFILE);
+		} else {
+			return Optional.empty();
 		}
 	}
 }

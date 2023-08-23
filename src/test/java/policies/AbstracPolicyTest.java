@@ -28,6 +28,8 @@ public abstract class AbstracPolicyTest {
 	protected URI DATE_TIME_STAMP = URI.create("http://www.w3.org/2001/XMLSchema#dateTimeStamp");
 	protected URI PROVIDER_ISSUER_CONNECTOR_URI = URI.create("http://w3id.org/engrd/connector/provider");
 	protected URI CONSUMER_ISSUER_CONNECTOR_URI = URI.create("http://w3id.org/engrd/connector/consumer");
+
+	protected URI SECURITY_POLICY_URI=URI.create("https://w3id.org/idsa/code/BASE_SECURITY_PROFILE");
 			
 	protected static DatatypeFactory datatypeFactory = null;
 	protected static Serializer serializer;
