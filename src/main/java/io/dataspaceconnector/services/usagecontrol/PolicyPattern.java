@@ -83,13 +83,10 @@ public enum PolicyPattern {
      * Type: Contains Personal Data
      */
     PERSONAL_DATA,
-
     //TECNALIA-ICT-OPTIMA: New Policy Pattern Enershare.
     /**
      * Type: Restrict the data usage to specific security profile.
      */
     SECURITY_PROFILE_RESTRICTED_USAGE;
-
-
 
 }

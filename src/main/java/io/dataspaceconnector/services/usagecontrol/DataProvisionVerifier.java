@@ -16,16 +16,17 @@
 package io.dataspaceconnector.services.usagecontrol;
 
 import de.fraunhofer.iais.eis.Rule;
-import de.fraunhofer.iais.eis.SecurityProfile;
 import io.dataspaceconnector.exceptions.PolicyRestrictionException;
 import io.dataspaceconnector.utils.RuleUtils;
-
-import java.util.*;
-
+import java.util.ArrayList;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * A {@link PolicyVerifier} implementation that checks whether data provision should be allowed.
@@ -47,35 +48,25 @@ public class DataProvisionVerifier implements PolicyVerifier<VerificationInput> 
     /**
      * Policy check on data provision on provider side.
      *
-     * @param target          The requested element.
-     * @param consumerUri     The URI of the consumer connector.
-     * @param created         The start date of the ContractAgreement.
-     * @param rules           The ids rule list.
-     * @param securityProfile
+     * @param target      The requested element.
+     * @param consumerUri The URI of the consumer connector.
+     * @param created     The start date of the ContractAgreement.
+     * @param rules       The ids rule list.
      * @throws PolicyRestrictionException If a policy restriction has been detected.
      */
     public void checkPolicy(final String target,
                             final String consumerUri,
                             final Date created,
-                            final ArrayList<Rule> rules, Optional<SecurityProfile> securityProfile) throws PolicyRestrictionException {
+                            final ArrayList<Rule> rules) throws PolicyRestrictionException {
         //TECNALIA-ICT-OPTIMA: Use variable instead of the ConnectorConfigurator
         final var ignoreUnsupportedPatterns = false;
         //TECNALIA-ICT-OPTIMA: Remove some Policy Patterns
-      /*  final var patternsToCheck = Arrays.asList(
-                PolicyPattern.PROVIDE_ACCESS,
-                PolicyPattern.PROHIBIT_ACCESS,
-                PolicyPattern.USAGE_DURING_INTERVAL);*
-
-       */
         final var patternsToCheck = Arrays.asList(
                 PolicyPattern.PROVIDE_ACCESS,
                 PolicyPattern.PROHIBIT_ACCESS,
-                PolicyPattern.USAGE_DURING_INTERVAL,
-                PolicyPattern.USAGE_UNTIL_DELETION,
-                PolicyPattern.CONNECTOR_RESTRICTED_USAGE,
-                PolicyPattern.SECURITY_PROFILE_RESTRICTED_USAGE);
+                PolicyPattern.USAGE_DURING_INTERVAL,PolicyPattern.CONNECTOR_RESTRICTED_USAGE,PolicyPattern.SECURITY_PROFILE_RESTRICTED_USAGE);
         try {
-            checkForAccess(patternsToCheck, target, consumerUri, created, rules,securityProfile);
+            checkForAccess(patternsToCheck, target, consumerUri, created, rules);
         } catch (PolicyRestrictionException exception) {
             // Unknown patterns cause an exception. Ignore if unsupported patterns are allowed.
             if (!ignoreUnsupportedPatterns) {
@@ -100,7 +91,7 @@ public class DataProvisionVerifier implements PolicyVerifier<VerificationInput> 
      */
     public void checkForAccess(final List<PolicyPattern> patterns,
                                final String target, final String consumerUri, final Date created,
-                               final ArrayList<Rule> rules,final Optional<SecurityProfile> profile)
+                               final ArrayList<Rule> rules)
             throws PolicyRestrictionException {
 
         // Check the policy of each rule.
@@ -108,7 +99,7 @@ public class DataProvisionVerifier implements PolicyVerifier<VerificationInput> 
             final var pattern = RuleUtils.getPatternByRule(rule);
             // Enforce only a set of patterns.
             if (patterns.contains(pattern)) {
-                ruleValidator.validatePolicy(pattern, rule, target, consumerUri, created, profile);
+                ruleValidator.validatePolicy(pattern, rule, target, consumerUri, created);
             }
         }
     }
@@ -119,7 +110,7 @@ public class DataProvisionVerifier implements PolicyVerifier<VerificationInput> 
     @Override
     public VerificationResult verify(final VerificationInput input) {
         try {
-            this.checkPolicy(input.getTarget(), input.getConsumerUri(), input.getCreated(), input.getRules(), input.getSecurityProfile());
+            this.checkPolicy(input.getTarget(), input.getConsumerUri(), input.getCreated(), input.getRules());
             return VerificationResult.ALLOWED;
         } catch (PolicyRestrictionException exception) {
             if (log.isDebugEnabled()) {

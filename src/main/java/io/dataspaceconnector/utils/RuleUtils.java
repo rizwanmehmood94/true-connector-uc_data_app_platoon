@@ -105,8 +105,7 @@ public final class RuleUtils {
                     } else if ((leftOperand == LeftOperand.PURPOSE )
                             && (((Constraint)constraints.get(0)).getOperator() == BinaryOperator.SAME_AS))  {
                         detectedPattern = PolicyPattern.PURPOSE_RESTRICTED_USAGE;
-                    }
-                    else if ((leftOperand == LeftOperand.SECURITY_LEVEL) &&  (((Constraint)constraints.get(0)).getOperator() == BinaryOperator.EQ)) {
+                    } else if ((leftOperand == LeftOperand.SECURITY_LEVEL) &&  (((Constraint)constraints.get(0)).getOperator() == BinaryOperator.EQ)) {
                         detectedPattern = PolicyPattern.SECURITY_PROFILE_RESTRICTED_USAGE;
                     } else {
                         detectedPattern = null;
@@ -332,8 +331,6 @@ public final class RuleUtils {
         URI allowedPurpose = constraint.getRightOperandReference();
         return allowedPurpose;
     }
-
-
     //TECNALIA-ICT-OPTIMA: New function for new rule
     /**
      * Returns the allowed Security Restriction.
@@ -346,48 +343,4 @@ public final class RuleUtils {
         URI allowedSecurityRestriction = URI.create(constraint.getRightOperand().getValue());
         return allowedSecurityRestriction;
     }
-
-
-    //TECNALIA-ICT-OPTIMA: New function for new rule
-    /**
-     * Returns the allowed Security Restriction.
-     *
-     * @param rule the policy constraint object
-     * @return the URI of the Purpose
-     */
-    public static URI getConnectorRestriction(Rule rule) {
-        Constraint constraint = (Constraint)rule.getConstraint().get(0);
-        URI allowedConnectorRestriction = constraint.getRightOperandReference();
-        return allowedConnectorRestriction;
-    }
-
-
-    //TECNALIA-ICT-OPTIMA: New function for new rule
-    /**
-     * Returns the allowed Remote Notification.
-     *
-     * @param rule the policy constraint object
-     * @return the URI of the Purpose
-     */
-    public static URI getRemoteNotification(Rule rule) {
-        Constraint constraint = (Constraint)rule.getConstraint().get(0);
-        URI allowedRemoteNotification = constraint.getRightOperandReference();
-        return allowedRemoteNotification;
-    }
-
-    //TECNALIA-ICT-OPTIMA: New function for new rule
-    /**
-     * Returns the allowed Modification during REST.
-     *
-     * @param rule the policy constraint object
-     * @return the URI of the Purpose
-     */
-    public static URI getModifyInRest(Rule rule) {
-        Constraint constraint = (Constraint)rule.getConstraint().get(0);
-        URI allowedModifyInRest = constraint.getRightOperandReference();
-        return allowedModifyInRest;
-    }
-
-
-
 }

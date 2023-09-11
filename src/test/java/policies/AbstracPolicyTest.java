@@ -28,8 +28,6 @@ public abstract class AbstracPolicyTest {
 	protected URI DATE_TIME_STAMP = URI.create("http://www.w3.org/2001/XMLSchema#dateTimeStamp");
 	protected URI PROVIDER_ISSUER_CONNECTOR_URI = URI.create("http://w3id.org/engrd/connector/provider");
 	protected URI CONSUMER_ISSUER_CONNECTOR_URI = URI.create("http://w3id.org/engrd/connector/consumer");
-
-	protected URI SECURITY_POLICY_URI=URI.create("https://w3id.org/idsa/code/BASE_SECURITY_PROFILE");
 			
 	protected static DatatypeFactory datatypeFactory = null;
 	protected static Serializer serializer;
@@ -44,14 +42,12 @@ public abstract class AbstracPolicyTest {
 				._action_(Util.asList(Action.USE))
 				._description_(Util.asList(new TypedLiteral("Description of contract agreement")))
 				._constraint_(constraints)
-
 				.build();
 		
 		//@formatter:off
 		return new ContractAgreementBuilder()
 				._consumer_(CONSUMER_ISSUER_CONNECTOR_URI)
 				._provider_(PROVIDER_ISSUER_CONNECTOR_URI)
-
 				._permission_(Util.asList(permission))
 				._contractDate_(now())
 				._contractStart_(now())

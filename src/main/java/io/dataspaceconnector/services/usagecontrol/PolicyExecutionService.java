@@ -15,9 +15,7 @@
  */
 package io.dataspaceconnector.services.usagecontrol;
 
-import de.fraunhofer.iais.eis.Permission;
 import de.fraunhofer.iais.eis.Rule;
-import io.dataspaceconnector.utils.RuleUtils;
 import org.springframework.stereotype.Service;
 
 import io.dataspaceconnector.exceptions.PolicyExecutionException;
@@ -56,24 +54,6 @@ public class PolicyExecutionService {
             logMessageService.sendMessage(recipient, logItem);
         }*/
     }
-
-
-  /**
-   * Send a message to the URL. Allow the access only if that operation was successful.
-   *
-   * @param target The target object.
-   * @throws PolicyExecutionException if the access could not be successfully logged.
-   */
-  public void remoteNotifyDataAccess(final String target) throws PolicyExecutionException {
-/*        final var recipient = connectorConfig.getClearingHouse();
-        final var logItem = buildLog(target).toString();
-
-        if (!recipient.equals(URI.create(""))) {
-            logMessageService.sendMessage(recipient, logItem);
-        }*/
-  }
-
-
   /**
    * Send a message to the clearing house. Allow the access only if that operation was successful.
    *
@@ -94,18 +74,18 @@ public class PolicyExecutionService {
   }
 
 
-    /**
-     * Build a log information object.
-     *
-     * @param target The accessed element.
-     * @return The log line.
-     */
-   private Map<String, Object> buildLog(final String target, String connectorId) {
+  /**
+   * Build a log information object.
+   *
+   * @param target The accessed element.
+   * @return The log line.
+   */
+  private Map<String, Object> buildLog(final String target, String connectorId) {
 
-        return new HashMap<>() {{
-            put("target", target);
-            put("issuerConnector", connectorId);
-            put("accessed", new Date());
-        }};
-    }
+    return new HashMap<>() {{
+      put("target", target);
+      put("issuerConnector", connectorId);
+      put("accessed", new Date());
+    }};
+  }
 }

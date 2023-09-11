@@ -2,6 +2,7 @@ package com.tecnalia.datausage.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 /**
  * Used for Customized TLS security, to avoid PKIX error.
  * When using RestTemplate call restTemplateBuilder.build().
- * 
+ *
  * @see it.eng.idsa.dataapp.service.impl.ProxyServiceImpl#ProxyServiceImpl(org.springframework.boot.web.client.RestTemplateBuilder, it.eng.idsa.dataapp.configuration.ECCProperties, it.eng.idsa.dataapp.service.RecreateFileService, java.util.Optional, String, String, Boolean, Boolean)
  */
 @Component
@@ -43,7 +44,9 @@ public class SecureRestTemplateCustomizer implements RestTemplateCustomizer {
 			sslcontextBuilder.loadTrustMaterial(null, (cert, auth) -> true);
 
 			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
-					sslcontextBuilder.build(), (HostnameVerifier) NoopHostnameVerifier.INSTANCE);
+					sslcontextBuilder.build(),
+					new DefaultHostnameVerifier()
+			);
 			httpClient = HttpClients.custom()
 					.setSSLSocketFactory((LayeredConnectionSocketFactory) sslConnectionSocketFactory).build();
 			final ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);

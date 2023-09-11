@@ -16,14 +16,12 @@
 package io.dataspaceconnector.services.usagecontrol;
 
 import de.fraunhofer.iais.eis.Rule;
-import de.fraunhofer.iais.eis.SecurityProfile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
 
 //TECNALIA-ICT-OPTIMA: Different class attributes: 
 // - consumerUri instead of issuerConnector
@@ -53,11 +51,5 @@ public class VerificationInput {
      * The start date of the ContractAgreement.
      */
     Date created;
-
-    /**
-     * The security profile.
-     */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private Optional<SecurityProfile> securityProfile;
      
 }

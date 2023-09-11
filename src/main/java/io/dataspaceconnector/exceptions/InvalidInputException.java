@@ -33,13 +33,4 @@ public class InvalidInputException extends RuntimeException {
         super(msg);
     }
 
-    /**
-     * Construct a InvalidInputException with the specified detail message and cause.
-     *
-     * @param msg   The detail message.
-     * @param cause The cause.
-     */
-    public InvalidInputException(final String msg, final Throwable cause) {
-        super(msg, cause);
-    }
 }

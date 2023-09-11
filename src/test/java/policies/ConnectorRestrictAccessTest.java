@@ -24,7 +24,7 @@ public class ConnectorRestrictAccessTest extends AbstracPolicyTest {
 		Constraint c = new ConstraintBuilder()
 				._leftOperand_(LeftOperand.SYSTEM)
 				._operator_(BinaryOperator.SAME_AS)
-				._rightOperand_(new RdfResource("https://example.com", URI.create("anyURI")))
+				._rightOperand_(new RdfResource("https://example.com"))
 				.build();
 		return createContractAgreement(Util.asList(c));
 		

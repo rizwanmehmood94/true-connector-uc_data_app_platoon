@@ -6,7 +6,6 @@ import de.fraunhofer.iais.eis.util.Util;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,7 +16,7 @@ public class SecurityLevelRestrictAccessTest extends AbstracPolicyTest {
 		ContractAgreement ca = createAgreement();
 
 		assertNotNull(ca);
-		System.out.println(serializer.serialize(ca));
+	//	System.out.println(serializer.serialize(ca));
 	}
 
 	private ContractAgreement createAgreement() {

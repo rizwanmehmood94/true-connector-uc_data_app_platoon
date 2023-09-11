@@ -12,7 +12,6 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import de.fraunhofer.iais.eis.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +28,10 @@ import com.tecnalia.datausage.repository.ContractRepository;
 import com.tecnalia.datausage.repository.RuleRepository;
 import com.tecnalia.datausage.usagecontrol.PersonalDataEnforcement;
 
+import de.fraunhofer.iais.eis.Contract;
+import de.fraunhofer.iais.eis.Permission;
+import de.fraunhofer.iais.eis.Prohibition;
+import de.fraunhofer.iais.eis.Rule;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
 import io.dataspaceconnector.services.usagecontrol.DataAccessVerifier;
 import io.dataspaceconnector.services.usagecontrol.DataProvisionVerifier;
@@ -119,7 +122,7 @@ public class EnforcementService {
 		// Apply enforcement
 		boolean allowAccess = false;
 		String filteredDataObject = body;
-		final var input = new VerificationInput(targetDataUri, ruleArrayList, consumerUri, validContractStart,getSecurityProfile(validContractStore.getProfile()));
+		final var input = new VerificationInput(targetDataUri, ruleArrayList, consumerUri, validContractStart);
 		if (consuming) {
 			// For each rule, apply enforcement
 			if (accessVerifier.verify(input) == VerificationResult.ALLOWED) {
@@ -200,8 +203,6 @@ public class EnforcementService {
 
 		String providerUri = contractStore.getProviderId();
 		String consumerUri = contractStore.getConsumerId();
-		String profile=contractStore.getProfile();
-
 
 		Iterable<RuleStore> ruleList = this.ruleRepository
 				.findAllByContractUuidAndTargetId(contractStore.getContractUuid(), targetDataUri);
@@ -227,7 +228,7 @@ public class EnforcementService {
 		// Apply enforcement
 		boolean allowAccess = false;
 		String filteredDataObject = body;
-		final var input = new VerificationInput(targetDataUri, ruleArrayList, consumerUri, validContractStart,getSecurityProfile(profile));
+		final var input = new VerificationInput(targetDataUri, ruleArrayList, consumerUri, validContractStart);
 		if (consuming) {
 			// For each rule, apply enforcement
 			if (accessVerifier.verify(input) == VerificationResult.ALLOWED) {
@@ -340,7 +341,7 @@ public class EnforcementService {
 	}
 
 	@Transactional
-	public void incrementAccessFrequency(String targetDataUri, String consumerUri) {
+	void incrementAccessFrequency(String targetDataUri, String consumerUri) {
 		// Increment by 1 the access frequency
 		Optional<AccessStore> bCheckExistsAccess = this.accessRepository.findByConsumerUriAndTargetUri(consumerUri,
 				targetDataUri);
@@ -358,28 +359,5 @@ public class EnforcementService {
 			this.accessRepository.saveAndFlush(accessStore);
 		}
 		return;
-	}
-
-	/**
-	 * Get security profile from string.
-	 *
-	 * @param input The input value.
-	 * @return A security profile, if the value matches the provided enums.
-	 */
-	public static Optional<SecurityProfile> getSecurityProfile(final String input) {
-
-
-		if (input.contains("BASE_SECURITY_PROFILE") ||
-				input.contains("BASE_CONNECTOR_SECURITY_PROFILE")) {
-			return Optional.of(SecurityProfile.BASE_SECURITY_PROFILE);
-		} else if (input.contains("TRUST_SECURITY_PROFILE") ||
-				input.contains("TRUST_CONNECTOR_SECURITY_PROFILE")) {
-			return Optional.of(SecurityProfile.TRUST_SECURITY_PROFILE);
-		} else if (input.contains("TRUST_PLUS_SECURITY_PROFILE") ||
-				input.contains("TRUST_PLUS_CONNECTOR_SECURITY_PROFILE")) {
-			return Optional.of(SecurityProfile.TRUST_PLUS_SECURITY_PROFILE);
-		} else {
-			return Optional.empty();
-		}
 	}
 }

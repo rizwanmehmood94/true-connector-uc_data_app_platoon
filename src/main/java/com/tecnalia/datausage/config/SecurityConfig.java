@@ -15,14 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final String USERNAME = "idsUser";
-	@Value("${application.security.password}")
-	private String password;
-
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser(USERNAME).password(password).roles("PROXY");
-	}
 	
 	@Override
     protected void configure(HttpSecurity http) throws Exception {

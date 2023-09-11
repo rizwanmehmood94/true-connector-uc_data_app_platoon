@@ -1,7 +1,5 @@
 package com.tecnalia.datausage.api;
 
-import de.fraunhofer.iais.eis.ArtifactRequestMessage;
-
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-03-29T09:57:40.792Z[GMT]")
 public class NotFoundException extends ApiException {
 	private static final long serialVersionUID = 2790062804074491298L;
@@ -11,6 +9,4 @@ public class NotFoundException extends ApiException {
 		super(code, msg);
 		this.code = code;
 	}
-
-
 }

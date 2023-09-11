@@ -8,27 +8,8 @@ public class TemporarilyNotAvailableException extends RuntimeException {
 
 	private Message header;
 
-	public TemporarilyNotAvailableException(Message header) {
-		super();
-		this.setHeader(header);
-	}
-
 	public TemporarilyNotAvailableException(String message) {
 		super(message);
-	}
-
-	public TemporarilyNotAvailableException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public TemporarilyNotAvailableException(String message, Message header) {
-		super(message);
-		this.header = header;
-	}
-
-	public TemporarilyNotAvailableException(String message, Throwable cause, Message header) {
-		super(message, cause);
-		this.setHeader(header);
 	}
 
 	public Message getHeader() {

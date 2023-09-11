@@ -56,10 +56,9 @@ public class ContractAgreementApiController implements ContractAgreementApi {
         }
 
         return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);*/
-       log.info("PolicyApiController:::body :"+body);
-        log.info("PolicyApiController:::: accept????");
+        log.info("PolicyApiController received request");
         return contractAgreementService.addOrUpdate(body);
-    }
+    }	
 
     public ResponseEntity<String> deleteContractAgreementUsingDELETE(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("contractUuid") String contractUuid) {
       /*  String accept = request.getHeader("Accept");

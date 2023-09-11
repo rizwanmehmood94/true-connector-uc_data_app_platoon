@@ -21,7 +21,7 @@ public class ComplexContraintPolicyTest extends AbstracPolicyTest {
 	public void createComplexContraintPolicyAgreementTest() throws IOException {
 		ContractAgreement complex = createComplexAgreement();
 		assertNotNull(complex);
-		System.out.println(serializer.serialize(complex));
+//		System.out.println(serializer.serialize(complex));
 	}
 
 	private ContractAgreement createComplexAgreement() {

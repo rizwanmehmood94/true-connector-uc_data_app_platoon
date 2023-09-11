@@ -48,10 +48,10 @@
 			<resource>
 				<filtering>true</filtering>
 				<directory>src/main/resources</directory>
-			<!--	<excludes>
+			<excludes>
 					<exclude>*.jks</exclude>
 					<exclude>*.properties</exclude>
-				</excludes>-->
+				</excludes>
 			</resource>
 		</resources>
         <plugins>
@@ -337,11 +337,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>it.eng.idsa</groupId>
-            <artifactId>true-connector-data_usage_app</artifactId>
-            <version>1.7.3-SNAPSHOT</version>
-        </dependency>
+
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <artifactId>websocket-server</artifactId>

@@ -25,6 +25,8 @@ import java.util.Optional;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import com.tecnalia.datausage.service.SelfDescriptionServiceImpl;
+import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class RuleValidator {
 
+    private final @NonNull SelfDescriptionServiceImpl getSelfDescription;
+
     /**
      * Policy execution point.
      */
@@ -58,22 +62,23 @@ public class RuleValidator {
      */
     private final @NonNull PolicyInformationService informationService;
 
+
+
     //TECNALIA-ICT-OPTIMA: Different input parameters: 
     // - consumerUri instead of issuerConnector
     // - created: ContractAgreement start date
      /**
-      * Validates the data access for a given rule.
-      *
-      * @param pattern         The recognized policy pattern.
-      * @param rule            The ids rule.
-      * @param target          The requested/accessed element.
-      * @param consumerURI     The URI of the consumer connector.
-      * @param created         The start date of the ContractAgreement.
-      * @param securityProfile
-      * @throws PolicyRestrictionException If a policy restriction was detected.
-      */
+     * Validates the data access for a given rule.
+     *
+     * @param pattern         The recognized policy pattern.
+     * @param rule            The ids rule.
+     * @param target          The requested/accessed element.
+     * @param consumerURI     The URI of the consumer connector.
+     * @param created         The start date of the ContractAgreement.
+     * @throws PolicyRestrictionException If a policy restriction was detected.
+     */
     void validatePolicy(final PolicyPattern pattern, final Rule rule, final String target,
-                        final String consumerURI, final Date created, Optional<SecurityProfile> securityProfile) throws PolicyRestrictionException {
+                        final String consumerURI, final Date created) throws PolicyRestrictionException {
         //TECNALIA-ICT-OPTIMA: Remove and add policy patterns.
         switch (pattern) {
             case PROVIDE_ACCESS:
@@ -106,7 +111,7 @@ public class RuleValidator {
                 break;
 
             case SECURITY_PROFILE_RESTRICTED_USAGE: //Security Profile
-                validateSecurityProfile(rule,securityProfile);
+                validateSecurityProfile(rule);
                 break;
 
             case USAGE_NOTIFICATION: //Remote Notifications
@@ -122,7 +127,6 @@ public class RuleValidator {
                 throw new PolicyRestrictionException(ErrorMessages.POLICY_RESTRICTION);
         }
     }
-
 
     /**
      * Checks if the requested data access is in the allowed time interval.
@@ -272,7 +276,7 @@ public class RuleValidator {
             }
             throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_INVALID_PURPOSE);
         }
-        String allowedPurposeAsString = allowedPurposeURI.toString();
+        String allowedRoleAsString = allowedPurposeURI.toString();
         String consumerPurposeAsString = "";
         URI pipEndpoint = RuleUtils.getPipEndpoint(rule);
         
@@ -283,11 +287,10 @@ public class RuleValidator {
         } catch (UnsupportedEncodingException e) {
         }
 
-       if (!allowedPurposeAsString.equals(consumerPurposeAsString)) {
+       if (!allowedRoleAsString.equals(consumerPurposeAsString)) {
             throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_INVALID_PURPOSE);
        }
     }
-
 
 
     //TECNALIA-ICT-OPTIMA: New method.
@@ -320,47 +323,55 @@ public class RuleValidator {
             throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_INVALID_CONSUMER);
         }
 
-      /*  String allowedRoleAsString = allowedConsumerURI.toString();
-        String consumerPurposeAsString = consumerURI.toString();
+    }
 
-        if (!allowedRoleAsString.equals(consumerPurposeAsString)) {
-            throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_INVALID_CONSUMER);
-        }*/
+
+
+
+    private void validateSecurityProfile(final Rule rule) throws PolicyRestrictionException {
+        Connector connector = this.getSelfDescription.getSelfDescription();
+        if (connector != null && connector.getSecurityProfile() != null) {
+            String securityProfileString = connector.getSecurityProfile().toString();
+            if (!securityProfileString.isEmpty() && !getSecurityProfile(securityProfileString).isEmpty()) {
+                try {
+                    final URI allowedProfile = RuleUtils.getAllowedSecurityRestriction(rule);
+                    final SecurityProfile securityProfile = connector.getSecurityProfile();
+                    String allowedProfileAsString = allowedProfile.toString();
+                    if (!allowedProfileAsString.equals(securityProfile.toString())) {
+                        throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
+                    }
+                } catch (NullPointerException e) {
+                    throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
+                }
+            } else {
+                throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
+            }
+        }
     }
 
 
     /**
-     * Checks whether the requesting connector has the right security level.
+     * Get security profile from string.
      *
-     * @param rule    The ids rule.
-     * @param profile The security profile.
-     * @throws PolicyRestrictionException If the connector ids do no match.
+     * @param input The input value.
+     * @return A security profile, if the value matches the provided enums.
      */
+    public static Optional<SecurityProfile> getSecurityProfile(final String input) {
 
-    private void validateSecurityProfile(final Rule rule, final Optional<SecurityProfile> profile)
-            throws PolicyRestrictionException {
-        if (profile.isEmpty()) {
-            throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
-        }
 
-        try {
-            final URI allowedProfile = RuleUtils.getAllowedSecurityRestriction(rule);
-            final SecurityProfile securityProfile = profile.get();
-            String allowedProfileAsString=allowedProfile.toString();
-            if (!allowedProfileAsString.equals(securityProfile.toString())) {
-                throw new PolicyRestrictionException(
-                        ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
-            }
-        } catch (NullPointerException e) {
-            throw new PolicyRestrictionException(
-                    ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
+        if (input.contains("BASE_SECURITY_PROFILE") ||
+                input.contains("BASE_CONNECTOR_SECURITY_PROFILE")) {
+            return Optional.of(SecurityProfile.BASE_SECURITY_PROFILE);
+        } else if (input.contains("TRUST_SECURITY_PROFILE") ||
+                input.contains("TRUST_CONNECTOR_SECURITY_PROFILE")) {
+            return Optional.of(SecurityProfile.TRUST_SECURITY_PROFILE);
+        } else if (input.contains("TRUST_PLUS_SECURITY_PROFILE") ||
+                input.contains("TRUST_PLUS_CONNECTOR_SECURITY_PROFILE")) {
+            return Optional.of(SecurityProfile.TRUST_PLUS_SECURITY_PROFILE);
+        } else {
+            return Optional.empty();
         }
     }
-
-
-
-
-
 
 
 }
