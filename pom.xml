@@ -320,32 +320,17 @@
             <version>${de.fraunhofer.iais.eis.ids.infomodel.validator.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
+
 
 
         <!-- swagger_ui -->
+
         <dependency>
 	        <groupId>org.springdoc</groupId>
 	        <artifactId>springdoc-openapi-ui</artifactId>
 	        <version>1.5.9</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-client</artifactId>
-        </dependency>
         <!-- oauth -->
         <!-- 
 		<dependency>
