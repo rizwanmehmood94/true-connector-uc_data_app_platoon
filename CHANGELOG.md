@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.4] - 2023-08-21
+
+### Changed
+
+ - change certified version
+
+## [1.7.3] - 2023-08-01
+
+### Changed
+
+ - add log folder, and healtcheck in Dockerfile
+
 ## [1.7.2] - 2023-07-17
 
 ### Added
