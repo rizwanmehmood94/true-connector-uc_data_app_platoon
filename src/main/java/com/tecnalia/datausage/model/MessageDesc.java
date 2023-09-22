@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Fraunhofer Institute for Software and Systems Engineering
+ * Copyright 2020-2022 Fraunhofer Institute for Software and Systems Engineering
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.dataspaceconnector.exceptions;
+package com.tecnalia.datausage.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.net.URI;
 
 /**
- * Thrown to indicate that a problem regarding a message occurred.
+ * Base class for all messages descriptions.
  */
-public class InvalidInputException extends RuntimeException {
-    /**
-     * Default serial version uid.
-     */
-    private static final long serialVersionUID = 1L;
+@Data
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
+public class MessageDesc {
 
     /**
-     * Construct a InvalidInputException with the specified detail message and cause.
-     *
-     * @param msg The detail message.
+     * The message's recipient.
      */
-    public InvalidInputException(final String msg) {
-        super(msg);
-    }
-
+    private URI recipient;
 }

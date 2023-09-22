@@ -90,7 +90,11 @@ public class ContractAgreementService {
 				log.info("PolicyService:::policyId :" + bCheckExistsContract.isPresent());
 				contractStore = (ContractStore) bCheckExistsContract.get();
 				contractStore.setContractAsString(policy);
-				contractStore.setConsumerId(contract.getConsumer().toString());
+				if (contract.getConsumer() != null) {
+					contractStore.setConsumerId(contract.getConsumer().toString());
+				} else {
+					return new ResponseEntity<String>("Consumer URI paramater has not been added", HttpStatus.BAD_REQUEST);
+				}
 				contractStore.setProviderId(contract.getProvider().toString());
 				this.contractRepository.saveAndFlush(contractStore);
 
@@ -111,7 +115,12 @@ public class ContractAgreementService {
 				contractStore.contractUuid(contractUuid.toString());
 				contractStore.setContractId(contract.getId().toString());
 				contractStore.setContractAsString(policy);
-				contractStore.setConsumerId(contract.getConsumer().toString());
+				if (contract.getConsumer() != null) {
+					contractStore.setConsumerId(contract.getConsumer().toString());
+				} else {
+					return new ResponseEntity<String>("Consumer URI paramater has not been added", HttpStatus.BAD_REQUEST);
+				}
+				//contractStore.setConsumerId(contract.getConsumer().toString());
 				contractStore.setProviderId(contract.getProvider().toString());
 				this.contractRepository.saveAndFlush(contractStore);
 

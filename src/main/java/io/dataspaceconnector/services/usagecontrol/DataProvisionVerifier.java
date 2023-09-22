@@ -64,7 +64,7 @@ public class DataProvisionVerifier implements PolicyVerifier<VerificationInput> 
         final var patternsToCheck = Arrays.asList(
                 PolicyPattern.PROVIDE_ACCESS,
                 PolicyPattern.PROHIBIT_ACCESS,
-                PolicyPattern.USAGE_DURING_INTERVAL);
+                PolicyPattern.USAGE_DURING_INTERVAL,PolicyPattern.CONNECTOR_RESTRICTED_USAGE,PolicyPattern.SECURITY_PROFILE_RESTRICTED_USAGE);
         try {
             checkForAccess(patternsToCheck, target, consumerUri, created, rules);
         } catch (PolicyRestrictionException exception) {

@@ -15,11 +15,16 @@
  */
 package io.dataspaceconnector.services.usagecontrol;
 
+import de.fraunhofer.iais.eis.Rule;
 import org.springframework.stereotype.Service;
 
 import io.dataspaceconnector.exceptions.PolicyExecutionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 //TECNALIA-ICT-OPTIMA: Comment out the methods, so that they do nothing.
 /**
@@ -49,20 +54,38 @@ public class PolicyExecutionService {
             logMessageService.sendMessage(recipient, logItem);
         }*/
     }
+  /**
+   * Send a message to the clearing house. Allow the access only if that operation was successful.
+   *
+   * @param rule    The ids rule.
+   * @param element The accessed element.
+   * @throws PolicyExecutionException If the notification has not been successful.
+   */
+  public void reportDataAccess(final Rule rule, final String element)
+          throws PolicyExecutionException {
+/*    if (rule instanceof Permission permission) {
+      final var postDuty = permission.getPostDuty().get(0);
+      final var recipient = RuleUtils.getEndpoint(postDuty);
 
-    /**
-     * Build a log information object.
-     *
-     * @param target The accessed element.
-     * @return The log line.
-     */
-/*    private Map<String, Object> buildLog(final URI target) {
-        final var id = connectorService.getConnectorId();
-
-        return new HashMap<>() {{
-            put("target", target);
-            put("issuerConnector", id);
-            put("accessed", new Date());
-        }};
+      //notificationSvc.sendMessage(URI.create(recipient), buildLog(element));
+    } else if (log.isWarnEnabled()) {
+      log.warn("Reporting data access is only supported for permissions.");
     }*/
+  }
+
+
+  /**
+   * Build a log information object.
+   *
+   * @param target The accessed element.
+   * @return The log line.
+   */
+  private Map<String, Object> buildLog(final String target, String connectorId) {
+
+    return new HashMap<>() {{
+      put("target", target);
+      put("issuerConnector", connectorId);
+      put("accessed", new Date());
+    }};
+  }
 }
