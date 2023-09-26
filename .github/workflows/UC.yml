@@ -1,0 +1,342 @@
+name: Build UC and run GH actions
+
+on:
+  push:
+    branches: [ "feature/*", "hotfix/*", "develop", "master"]
+
+jobs:
+  build:
+  if: "!contains(github.event.head_commit.message, '[maven-release-plugin]')"
+  runs-on: ubuntu-latest
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+    DOCKER_USER: ${{secrets.DOCKER_USER}}
+    DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+
+  steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    - name: Build with Maven
+      run: mvn clean package
+    - name: Run Creating Docker Image from UC repo
+      run: ./ci/deploy.sh
+
+  allow-data-usage:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/allow-data-usage/allow_data_usage.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+        
+  connector-restrict-access:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/connector-restrict-access/connector_restrict_access.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+        
+  duration-restricted-data-usage:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/duration-restricted-data-usage/duration_restricted_data_usage.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+        
+  interval-restricted-data-usage:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/interval-restricted-data-usage/interval_restricted_data_usage.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+
+  prohibit-data-usage:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/prohibit-data-usage/prohibit_data_usage.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+
+  purpose-based-data-usage:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/purpose-based-data-usage/purpose_based_data_usage.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+
+  restricted-number-of-data-usage:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/restricted-number-of-data-usage/restricted_number_of_data_usage.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+
+  role-based-data-usage:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/role-based-data-usage/role_based_data_usage.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
+
+  security-level-restrict-policy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_PACKAGE_REPO_PASSWORD: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+      DAPS_PASSWORD_DOCKER: ${{secrets.KEYSTORE_PASSWORD}}
+      SSL_KEY_PASSWORD: ${{secrets.SSL_KEY_PASSWORD}}
+      TRUSTSTORE_PASSWORD_DOCKER: ${{secrets.TRUSTSTORE_PASSWORD_DOCKER}}
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: Run env setup
+        run: ./ci/setupEnv.sh
+
+      - name: Run docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env up -d
+
+      - name: Wait for container starting
+        run: sleep 90
+
+      - name: Check if the container is up and running
+        run: docker ps -a
+
+      - name: Run Tests for allow data usage CA
+        run: newman run ./ci/docker/test-cases/security-level-restrict-policy/security_level_restrict_policy.json --insecure --bail --verbose
+
+      - name: Dump docker UC
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+
+      - name: Stop docker container UC
+        run: docker-compose -f ./ci/docker/docker-compose.yml --env-file ./ci/docker/.env down -v
