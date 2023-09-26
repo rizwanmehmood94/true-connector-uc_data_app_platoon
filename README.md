@@ -37,6 +37,8 @@ The data Usage Control module supports usage policies written in the IDS Usage C
 - Role-restricted Data Usage: allows data usage for a defined role. (for example http://example.com/ids-role:riskManager)
 - Purpose-restricted Data Usage Policy: allows data usage for defined purpose. (for example http://example.com/ids-purpose:Marketing)
 - Restricted Number of Usages: allows data usage for n times. 
+- Connector restrict Data Usage: allows data usage for defined connector
+- Security level restricted Data Usage: allows data usage for defined connector security level
 - Personal Data: filter out the contents of the data according to the data subject´s consents. To apply this rule, the Usage Control module interacts with CaPe.
 
 **NOTE:** In case of trying to apply policy pattern that is not supported by Data Usage Control module, error 400 - Policy is not supported will be returned.
