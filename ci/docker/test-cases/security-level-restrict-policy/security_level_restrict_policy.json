@@ -1,0 +1,272 @@
+{
+	"info": {
+		"_postman_id": "a2482f30-e3e0-4da4-96ce-09fe89f6f2f5",
+		"name": "GHA Security level restrict policy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2326106",
+		"_collection_link": "https://martian-water-684810.postman.co/workspace/TC-CI~255b9f39-3698-4730-873d-66392ca44292/collection/2326106-a2482f30-e3e0-4da4-96ce-09fe89f6f2f5?action=share&creator=2326106&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Create Contract Agreement (Security Level restrict access - BASE)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Body content test\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Contract Agreement has been added\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@context\": {\n        \"ids\": \"https://w3id.org/idsa/core/\",\n        \"idsc\": \"https://w3id.org/idsa/code/\"\n    },\n    \"@type\": \"ids:ContractAgreement\",\n    \"@id\": \"https://w3id.org/idsa/autogen/contractAgreement/806b0cc2-0083-4f25-b450-134a887c0dd2\",\n    \"ids:permission\": [\n        {\n            \"@type\": \"ids:Permission\",\n            \"@id\": \"https://w3id.org/idsa/autogen/permission/71640850-caa3-41c1-8c53-2479809092b4\",\n            \"ids:target\": {\n                \"@id\": \"http://w3id.org/engrd/connector/artifact/1\"\n            },\n            \"ids:description\": [\n                {\n                    \"@value\": \"Allow usage of the data based on BASE security connector profile\",\n                    \"@type\": \"http://www.w3.org/2001/XMLSchema#string\"\n                }\n            ],\n            \"ids:title\": [\n                {\n                    \"@value\": \"Permission title for artifact 1\",\n                    \"@type\": \"http://www.w3.org/2001/XMLSchema#string\"\n                }\n            ],\n            \"ids:constraint\": [\n                {\n                    \"@type\": \"ids:Constraint\",\n                    \"@id\": \"https://w3id.org/idsa/autogen/constraint/72cffaa8-e874-4ae9-80fa-db817ffeab30\",\n                    \"ids:leftOperand\": {\n                        \"@id\": \"https://w3id.org/idsa/code/SECURITY_LEVEL\"\n                    },\n                    \"ids:operator\": {\n                        \"@id\": \"https://w3id.org/idsa/code/EQ\"\n                    },\n                    \"ids:rightOperand\": {\n                        \"@value\": \"https://w3id.org/idsa/code/BASE_SECURITY_PROFILE\",\n                        \"@type\": \"http://www.w3.org/2001/XMLSchema#string\"\n                    }\n                }\n            ],\n            \"ids:action\": [\n                {\n                    \"@id\": \"https://w3id.org/idsa/code/USE\"\n                }\n            ]\n        }\n    ],\n    \"ids:provider\": {\n        \"@id\": \"http://w3id.org/engrd/connector/provider\"\n    },\n    \"ids:contractStart\": {\n        \"@value\": \"2023-08-03T16:15:53.365+02:00\",\n        \"@type\": \"http://www.w3.org/2001/XMLSchema#dateTimeStamp\"\n    },\n    \"ids:contractDate\": {\n        \"@value\": \"2023-08-03T16:15:53.364+02:00\",\n        \"@type\": \"http://www.w3.org/2001/XMLSchema#dateTimeStamp\"\n    },\n    \"ids:consumer\": {\n        \"@id\": \"http://w3id.org/engrd/connector/consumer\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8180/platoontec/PlatoonDataUsage/1.0/contractAgreement",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"platoontec",
+						"PlatoonDataUsage",
+						"1.0",
+						"contractAgreement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enforce Security Level restrict access agreement - BASE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Body content test\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Testing Allow data usage agreement\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Testing Allow data usage agreement\"",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8180/platoontec/PlatoonDataUsage/1.0/enforce/usage/agreement?contractAgreementUri={{securityLevelRestrictAccessBaseCaID}}&requestedArtifact={{requestedArtifact}}&consuming={{consuming}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"platoontec",
+						"PlatoonDataUsage",
+						"1.0",
+						"enforce",
+						"usage",
+						"agreement"
+					],
+					"query": [
+						{
+							"key": "contractAgreementUri",
+							"value": "{{securityLevelRestrictAccessBaseCaID}}"
+						},
+						{
+							"key": "requestedArtifact",
+							"value": "{{requestedArtifact}}"
+						},
+						{
+							"key": "consuming",
+							"value": "{{consuming}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Contract Agreement (Security Level restrict access - BASE -> TRUST)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Body content test\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Contract Agreement has been updated\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@context\": {\n        \"ids\": \"https://w3id.org/idsa/core/\",\n        \"idsc\": \"https://w3id.org/idsa/code/\"\n    },\n    \"@type\": \"ids:ContractAgreement\",\n    \"@id\": \"https://w3id.org/idsa/autogen/contractAgreement/806b0cc2-0083-4f25-b450-134a887c0dd2\",\n    \"ids:permission\": [\n        {\n            \"@type\": \"ids:Permission\",\n            \"@id\": \"https://w3id.org/idsa/autogen/permission/71640850-caa3-41c1-8c53-2479809092b4\",\n            \"ids:target\": {\n                \"@id\": \"http://w3id.org/engrd/connector/artifact/1\"\n            },\n            \"ids:description\": [\n                {\n                    \"@value\": \"Allow usage of the data based on BASE security connector profile\",\n                    \"@type\": \"http://www.w3.org/2001/XMLSchema#string\"\n                }\n            ],\n            \"ids:title\": [\n                {\n                    \"@value\": \"Permission title for artifact 1\",\n                    \"@type\": \"http://www.w3.org/2001/XMLSchema#string\"\n                }\n            ],\n            \"ids:constraint\": [\n                {\n                    \"@type\": \"ids:Constraint\",\n                    \"@id\": \"https://w3id.org/idsa/autogen/constraint/72cffaa8-e874-4ae9-80fa-db817ffeab30\",\n                    \"ids:leftOperand\": {\n                        \"@id\": \"https://w3id.org/idsa/code/SECURITY_LEVEL\"\n                    },\n                    \"ids:operator\": {\n                        \"@id\": \"https://w3id.org/idsa/code/EQ\"\n                    },\n                    \"ids:rightOperand\": {\n                        \"@value\": \"https://w3id.org/idsa/code/TRUST_SECURITY_PROFILE\",\n                        \"@type\": \"http://www.w3.org/2001/XMLSchema#string\"\n                    }\n                }\n            ],\n            \"ids:action\": [\n                {\n                    \"@id\": \"https://w3id.org/idsa/code/USE\"\n                }\n            ]\n        }\n    ],\n    \"ids:provider\": {\n        \"@id\": \"http://w3id.org/engrd/connector/provider\"\n    },\n    \"ids:contractStart\": {\n        \"@value\": \"2023-08-03T16:15:53.365+02:00\",\n        \"@type\": \"http://www.w3.org/2001/XMLSchema#dateTimeStamp\"\n    },\n    \"ids:contractDate\": {\n        \"@value\": \"2023-08-03T16:15:53.364+02:00\",\n        \"@type\": \"http://www.w3.org/2001/XMLSchema#dateTimeStamp\"\n    },\n    \"ids:consumer\": {\n        \"@id\": \"http://w3id.org/engrd/connector/consumer\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8180/platoontec/PlatoonDataUsage/1.0/contractAgreement",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"platoontec",
+						"PlatoonDataUsage",
+						"1.0",
+						"contractAgreement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enforce updated Security Level restrict access agreement - BASE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"Body content test\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"PDP decided to inhibit the usage: Event is not allowed according to policy\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Testing Allow data usage agreement\"",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8180/platoontec/PlatoonDataUsage/1.0/enforce/usage/agreement?contractAgreementUri={{securityLevelRestrictAccessBaseCaID}}&requestedArtifact={{requestedArtifact}}&consuming={{consuming}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"platoontec",
+						"PlatoonDataUsage",
+						"1.0",
+						"enforce",
+						"usage",
+						"agreement"
+					],
+					"query": [
+						{
+							"key": "contractAgreementUri",
+							"value": "{{securityLevelRestrictAccessBaseCaID}}"
+						},
+						{
+							"key": "requestedArtifact",
+							"value": "{{requestedArtifact}}"
+						},
+						{
+							"key": "consuming",
+							"value": "{{consuming}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "requestedArtifact",
+			"value": "http://w3id.org/engrd/connector/artifact/1",
+			"type": "string"
+		},
+		{
+			"key": "consuming",
+			"value": "true",
+			"type": "string"
+		},
+		{
+			"key": "securityLevelRestrictAccessBaseCaID",
+			"value": "https://w3id.org/idsa/autogen/contractAgreement/806b0cc2-0083-4f25-b450-134a887c0dd2",
+			"type": "string"
+		}
+	]
+}
