@@ -60,7 +60,7 @@ services:
       - ALIAS=${ALIAS}
       - TZ=Europe/Rome
     ports:
-      - ":8180:8180"
+      - "8180:8180"
     volumes:
       - ./uc-dataapp_resources:/etc
       - ./ecc_cert:/cert
