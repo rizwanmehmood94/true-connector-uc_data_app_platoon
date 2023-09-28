@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Downloading certificate from private repository..."
-git clone https://${GH_TOKEN}:x-oauth-basic@github.com/Engineering-Research-and-Development/private-files-repo.git
+git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Engineering-Research-and-Development/private-files-repo.git
 cp -a private-files-repo/. ./ci/docker/ecc_cert
 echo "Certificate from private repository downloaded"
 
@@ -18,7 +18,3 @@ sudo chmod +x /usr/local/bin/docker-compose
 echo "docker-compose correctly installed"
 
 sudo docker system prune --volumes -f
-
-#mkdir -p $HOME/.m2
-
-#cp -f ./ci/.m2/settings/settings.xml  $HOME/.m2
