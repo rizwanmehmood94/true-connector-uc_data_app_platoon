@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 
  - add Security level and connector access policies
  - add GHA (Git Hub Actions)
-
+ - changed healthcheck to https in Dockerfile
 
 ## [1.7.4] - 2023-08-21
 
