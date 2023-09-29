@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.5] - 2023-09-26
+
+### Added
+
+ - add Security level and connector access policies
+ - add GHA (Git Hub Actions)
+
+
 ## [1.7.4] - 2023-08-21
 
 ### Changed

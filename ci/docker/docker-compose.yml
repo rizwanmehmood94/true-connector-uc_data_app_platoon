@@ -1,0 +1,86 @@
+version: '3.1'
+services:
+  ecc-consumer:
+    image: rdlabengpa/ids_execution_core_container:develop
+    container_name: 'ecc-consumer'
+    ports:
+      - ${ECC_PORT}:8449  #Port for exposing HTTP endpoints
+      - 8889:8889  #Exposed port for receiving data from another connector (REST)
+      - 8086:8086  #Exposed port for receiving data from another connector (WS)
+    networks:
+      - datausage
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
+      - DATA_APP_ENDPOINT=${ECC_DATA_APP_ENDPOINT}               #Data APP enpoint for consuming received data
+      - DATA_APP_HEALTH_ENDPOINT=${ECC_DATA_APP_HEALTH_ENDPOINT}
+      - MULTIPART_EDGE=${ECC_MULTIPART_EDGE}                     #Data APP endpoint multipart/mixed content type
+      - MULTIPART_ECC=${MULTIPART_ECC}
+      - CONNECTOR_ID=${ECC_ISSUER_CONNECTOR_URI}
+      - IDSCP2=${IDSCP2}
+      - WS_EDGE=${ECC_WS_EDGE}
+      - WS_ECC=${WS_ECC}
+      - UC_DATAAPP_ENABLED=${UC_ENABLED}
+      - UC_DATAAPP_URI=${ECC_UC_DATAAPP_URI}
+      - UC_DATAAPP_HEALTH_URI=${ECC_UC_DATAAPP_HEALTH_URI}
+      - PUBLIC_PORT=${ECC_PORT}
+      - BROKER_URL=${BROKER_URL}
+      - CACHE_TOKEN=${CACHE_TOKEN}
+      - FETCH_TOKEN_ON_STARTUP=${FETCH_TOKEN_ON_STARTUP}
+      - KEYSTORE_NAME=${KEYSTORE_NAME}
+      - KEY_PASSWORD=${KEY_PASSWORD}
+      - KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}
+      - ALIAS=${ALIAS}
+      - DAPS_KEYSTORE_NAME=${ECC_DAPS_KEYSTORE_NAME}
+      - DAPS_KEYSTORE_PASSWORD=${ECC_DAPS_KEYSTORE_PASSWORD}
+      - DAPS_KEYSTORE_ALIAS=${ECC_DAPS_KEYSTORE_ALIAS}
+      - TRUSTORE_NAME=${TRUSTORE_NAME}
+      - TRUSTORE_PASSWORD=${TRUSTORE_PASSWORD}
+      - TZ=Europe/Rome
+    volumes:
+      - ./ecc_resources:/config
+      - ./ecc_cert:/cert
+      - ecc_data:/home/nobody/data
+    extra_hosts:
+      - "ecc:127.0.0.1"
+
+  uc-dataapp-consumer:
+    image: rdlabengpa/ids_uc_data_app_platoon:develop
+    container_name: 'uc-dataapp-consumer'
+    depends_on:
+      - uc-dataapp-pip-consumer
+      - ecc-consumer
+    networks:
+      - datausage
+    environment:
+      - ECC_PORT=8449
+      - ECC_SELF_DESCRIPTION_URL=${ECC_SELF_DESCRIPTION_URL}
+      - KEYSTORE_NAME=${KEYSTORE_NAME}
+      - KEY_PASSWORD=${KEY_PASSWORD}
+      - KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}
+      - ALIAS=${ALIAS}
+      - TZ=Europe/Rome
+    ports:
+      - "8180:8180"
+    volumes:
+      - ./uc-dataapp_resources:/etc
+      - ./ecc_cert:/cert
+      - uc_data:/data
+ 
+  uc-dataapp-pip-consumer:
+    image: rdlabengpa/ids_uc_data_app_platoon_pip:v1.0.0
+    networks:
+      - datausage
+    container_name: uc-dataapp-pip-consumer
+    environment:
+      - TZ=Europe/Rome
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./pip_resources:/etc
+  
+networks:
+  datausage: {}
+
+volumes:
+  ecc_data: { }
+  uc_data: { }

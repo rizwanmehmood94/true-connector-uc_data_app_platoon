@@ -1,0 +1,64 @@
+{
+  "@context": {
+    "ids": "https://w3id.org/idsa/core/",
+    "idsc": "https://w3id.org/idsa/code/"
+  },
+  "@type": "ids:ContractAgreement",
+  "@id": "https://w3id.org/idsa/autogen/contractAgreement/806b0cc2-0083-4f25-b450-134a887c0dd2",
+  "ids:permission": [
+    {
+      "@type": "ids:Permission",
+      "@id": "https://w3id.org/idsa/autogen/permission/71640850-caa3-41c1-8c53-2479809092b4",
+      "ids:target": {
+        "@id": "http://w3id.org/engrd/connector/artifact/1"
+      },
+      "ids:description": [
+        {
+          "@value": "Allow usage of the data based on BASE security connector profile",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      ],
+      "ids:title": [
+        {
+          "@value": "Permission title for artifact 1",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      ],
+      "ids:constraint": [
+        {
+          "@type": "ids:Constraint",
+          "@id": "https://w3id.org/idsa/autogen/constraint/72cffaa8-e874-4ae9-80fa-db817ffeab30",
+          "ids:leftOperand": {
+            "@id": "https://w3id.org/idsa/code/SECURITY_LEVEL"
+          },
+          "ids:operator": {
+            "@id": "https://w3id.org/idsa/code/EQ"
+          },
+          "ids:rightOperand": {
+            "@value": "https://w3id.org/idsa/code/BASE_SECURITY_PROFILE",
+            "@type": "http://www.w3.org/2001/XMLSchema#string"
+          }
+        }
+      ],
+      "ids:action": [
+        {
+          "@id": "https://w3id.org/idsa/code/USE"
+        }
+      ]
+    }
+  ],
+  "ids:provider": {
+    "@id": "http://w3id.org/engrd/connector/provider"
+  },
+  "ids:contractStart": {
+    "@value": "2023-08-03T16:15:53.365+02:00",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  },
+  "ids:contractDate": {
+    "@value": "2023-08-03T16:15:53.364+02:00",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTimeStamp"
+  },
+  "ids:consumer": {
+    "@id": "http://w3id.org/engrd/connector/consumer"
+  }
+}
