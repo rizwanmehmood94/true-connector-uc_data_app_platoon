@@ -119,6 +119,32 @@ Examples of all policies can be found in [Policies_example](./Policies_example/)
 
 **NOTE:** Be aware of the dates in policies example, change them according to actual dates. 
 
-## 4 License
+## 4 GitHub Actions
+
+Usage Control application is configured to use GitHub Actions when new branch is pushed. This will enforce to run existing tests to check if functionality is not broken. Tests that will be performed are following:
+
+
+* [allow data usage](Policies_example/allow_data_usage.json)
+* [connector restricted usage](Policies_example/connector_restrict_data_usage.json)
+* [duration restricted usage](Policies_example/duration_restricted_data_usage.json)
+* [interval restricted usage](Policies_example/interval_restricted_data_usage.json)
+* [prohibit data access](Policies_example/prohibit_data_usage.json)
+* [purpose based access](Policies_example/purpose_based_data_usage.json)
+* [restrict number of usages](Policies_example/restricted_number_of_usages_data_usage.json)
+* [role based usage](Policies_example/role_base_data_usage.json)
+* [security level restricted](Policies_example/security_level_access_data_usage.json)
+
+Each test case performs following:
+
+ - insert defined policy
+ - enforce usage and verify successful expected result
+ - performs policy update to prohibit data access
+ - enforce policy and verify prohibited data access
+
+Once new policy enforcement is implemented, it should be covered with new GitHub Action test, to cover same testcase like existing ones.
+
+For more details about tests, please check ci folder.
+
+## 5 License
 
 Licensed under the Apache 2.0. See LICENSE.txt for more details. 
