@@ -1,13 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.7.5] - 2023-09-26
+## [1.7.5] - 2023-10-02
 
 ### Added
 
  - add Security level and connector access policies
  - add GHA (Git Hub Actions)
  - changed healthcheck to https in Dockerfile
+ 
+### Changed 
+ - bumped spring-boot-parent to 2.5.14
 
 ## [1.7.4] - 2023-08-21
 
