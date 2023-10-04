@@ -4,3 +4,11 @@
 .factorypath
 .project
 .settings/
+.idea/
+.swagger-codegen/
+/src/main/main.iml
+test/test.iml
+platoon_db.mv.db
+platoon_db.trace.db
+true_connector_UCAPP.log
+

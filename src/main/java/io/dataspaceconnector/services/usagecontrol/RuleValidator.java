@@ -21,9 +21,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import com.tecnalia.datausage.service.SelfDescriptionServiceImpl;
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.SecurityProfile;
 import org.springframework.stereotype.Service;
 
 import de.fraunhofer.iais.eis.Rule;
@@ -46,6 +50,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class RuleValidator {
 
+    private final @NonNull SelfDescriptionServiceImpl getSelfDescription;
+
     /**
      * Policy execution point.
      */
@@ -56,6 +62,8 @@ public class RuleValidator {
      */
     private final @NonNull PolicyInformationService informationService;
 
+
+
     //TECNALIA-ICT-OPTIMA: Different input parameters: 
     // - consumerUri instead of issuerConnector
     // - created: ContractAgreement start date
@@ -65,7 +73,7 @@ public class RuleValidator {
      * @param pattern         The recognized policy pattern.
      * @param rule            The ids rule.
      * @param target          The requested/accessed element.
-     * @param consumerUri     The URI of the consumer connector.
+     * @param consumerURI     The URI of the consumer connector.
      * @param created         The start date of the ContractAgreement.
      * @throws PolicyRestrictionException If a policy restriction was detected.
      */
@@ -97,6 +105,19 @@ public class RuleValidator {
                 break;
             case PERSONAL_DATA:
                 break;
+
+            case CONNECTOR_RESTRICTED_USAGE: //Connector Restricted Usage
+                validateIssuerConnector(rule,consumerURI);
+                break;
+
+            case SECURITY_PROFILE_RESTRICTED_USAGE: //Security Profile
+                validateSecurityProfile(rule);
+                break;
+
+            case USAGE_NOTIFICATION: //Remote Notifications
+                executionService.reportDataAccess(rule,consumerURI);
+                break;
+
             case PROHIBIT_ACCESS:
                 throw new PolicyRestrictionException(ErrorMessages.NOT_ALLOWED);
             default:
@@ -184,7 +205,7 @@ public class RuleValidator {
      *
      * @param rule        The ids rule.
      * @param target      The accessed element.
-     * @param consumerUri The URI of the consumer connector.
+     * @param consumerURI The URI of the consumer connector.
      * @throws PolicyRestrictionException If the access number has been reached.
      */
     private void validateAccessNumber(final Rule rule, final String target, final String consumerURI)
@@ -270,6 +291,87 @@ public class RuleValidator {
             throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_INVALID_PURPOSE);
        }
     }
-    
+
+
+    //TECNALIA-ICT-OPTIMA: New method.
+    /**
+     * Checks whether the requesting connector corresponds to the allowed connector.
+     *
+     * @param rule        The ids rule.
+     * @param consumerURI The consumer URI.
+     * @throws PolicyRestrictionException If it is not allowed to access the data with such Purpose.
+     */
+    public void validateIssuerConnector(final Rule rule, String consumerURI)
+            throws PolicyRestrictionException {
+
+        String allowedConsumer = RuleUtils.getEndpoint(rule);
+        //URI allowedConsumerURI = getConnectorRestriction(rule);
+        URI allowedConsumerURI=URI.create(allowedConsumer);
+        if (allowedConsumerURI == null) {
+            if (log.isWarnEnabled()) {
+                log.warn("Purpose is null. [rule=({})]", rule);
+            }
+            throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_INVALID_CONSUMER);
+        }
+
+        String allowedConsumerURIAsString = allowedConsumerURI.toString();
+
+        if (!allowedConsumerURIAsString.equals(consumerURI)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Invalid consumer connector. [issuer=({})]", consumerURI);
+            }
+            throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_INVALID_CONSUMER);
+        }
+
+    }
+
+
+
+
+    private void validateSecurityProfile(final Rule rule) throws PolicyRestrictionException {
+        Connector connector = this.getSelfDescription.getSelfDescription();
+        if (connector != null && connector.getSecurityProfile() != null) {
+            String securityProfileString = connector.getSecurityProfile().toString();
+            if (!securityProfileString.isEmpty() && !getSecurityProfile(securityProfileString).isEmpty()) {
+                try {
+                    final URI allowedProfile = RuleUtils.getAllowedSecurityRestriction(rule);
+                    final SecurityProfile securityProfile = connector.getSecurityProfile();
+                    String allowedProfileAsString = allowedProfile.toString();
+                    if (!allowedProfileAsString.equals(securityProfile.toString())) {
+                        throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
+                    }
+                } catch (NullPointerException e) {
+                    throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
+                }
+            } else {
+                throw new PolicyRestrictionException(ErrorMessages.DATA_ACCESS_SECURITY_PURPOSE);
+            }
+        }
+    }
+
+
+    /**
+     * Get security profile from string.
+     *
+     * @param input The input value.
+     * @return A security profile, if the value matches the provided enums.
+     */
+    public static Optional<SecurityProfile> getSecurityProfile(final String input) {
+
+
+        if (input.contains("BASE_SECURITY_PROFILE") ||
+                input.contains("BASE_CONNECTOR_SECURITY_PROFILE")) {
+            return Optional.of(SecurityProfile.BASE_SECURITY_PROFILE);
+        } else if (input.contains("TRUST_SECURITY_PROFILE") ||
+                input.contains("TRUST_CONNECTOR_SECURITY_PROFILE")) {
+            return Optional.of(SecurityProfile.TRUST_SECURITY_PROFILE);
+        } else if (input.contains("TRUST_PLUS_SECURITY_PROFILE") ||
+                input.contains("TRUST_PLUS_CONNECTOR_SECURITY_PROFILE")) {
+            return Optional.of(SecurityProfile.TRUST_PLUS_SECURITY_PROFILE);
+        } else {
+            return Optional.empty();
+        }
+    }
+
 
 }

@@ -21,4 +21,4 @@ RUN chown -R nobody:nogroup /home/nobody
 USER 65534
 
 ENTRYPOINT java -jar /home/nobody/app/dataUsage.jar
-HEALTHCHECK --interval=5s --retries=12 --timeout=10s CMD curl --fail -k http://localhost:8080/platoontec/PlatoonDataUsage/1.0/about/version || exit 1
+HEALTHCHECK --interval=5s --retries=12 --timeout=10s CMD curl --fail -k https://localhost:8080/platoontec/PlatoonDataUsage/1.0/about/version || exit 1
