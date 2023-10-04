@@ -5,7 +5,7 @@
     <packaging>jar</packaging>
     <name>TRUE Connector Usage Data App</name>
 	<description>TRUE Connector Usage Data App - policy enforcement</description>
-    <version>1.7.5-SNAPSHOT</version>
+    <version>1.7.6-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
