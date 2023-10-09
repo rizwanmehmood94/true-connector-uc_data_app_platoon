@@ -1,9 +1,10 @@
 package com.tecnalia.datausage.config;
 
+import java.util.Arrays;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -17,14 +18,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.HostnameVerifier;
-import java.util.Arrays;
-
 /**
  * Used for Customized TLS security, to avoid PKIX error.
  * When using RestTemplate call restTemplateBuilder.build().
- *
- * @see it.eng.idsa.dataapp.service.impl.ProxyServiceImpl#ProxyServiceImpl(org.springframework.boot.web.client.RestTemplateBuilder, it.eng.idsa.dataapp.configuration.ECCProperties, it.eng.idsa.dataapp.service.RecreateFileService, java.util.Optional, String, String, Boolean, Boolean)
  */
 @Component
 public class SecureRestTemplateCustomizer implements RestTemplateCustomizer {
