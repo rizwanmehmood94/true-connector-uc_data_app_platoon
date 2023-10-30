@@ -6,7 +6,7 @@ LABEL maintainer="gabriele.deluca@eng.it"
 RUN apk add --no-cache openssl curl
 
 RUN mkdir -p /home/nobody/app && mkdir -p /home/nobody/data/log/ucapp
-RUN apk add --no-cache openssl curl
+RUN apk add --no-cache openssl curl cosign
 
 WORKDIR /home/nobody
 
