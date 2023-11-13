@@ -35,7 +35,7 @@ public class CertificationCheck {
 		if (StringUtils.containsIgnoreCase(buildProperties.getVersion(), "SNAPSHOT")) {
 			logger.info("Skipping version certification check, since development version is being used.");
 		} else {
-			String rootImageName = "rdlabengpa/ids_be_data_app:v";
+			String rootImageName = "rdlabengpa/ids_uc_data_app_platoon:v";
 			List<String> startCmdList = getStartCmdList();
 			List<String> cmdList = new ArrayList<String>(startCmdList);
 			cmdList.add("echo | cosign verify --key " + targetDirectory.resolve("trueconn.pub") + " " + rootImageName
@@ -46,7 +46,7 @@ public class CertificationCheck {
 			boolean containsError = StringUtils.containsIgnoreCase(getCosignVerification, "error");
 
 			if (containsError) {
-				logger.warn("WARNING: You're using uncertified version of DataApp!");
+				logger.warn("WARNING: You're using uncertified version of Usage Control data app!");
 			} else {
 				logger.info("Using certified version: " + buildProperties.getVersion());
 			}
