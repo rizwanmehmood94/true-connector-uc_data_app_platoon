@@ -1,11 +1,8 @@
-package com.tecnalia.datausage.service;
+package com.tecnalia.datausage.service.impl;
 
-import de.fraunhofer.iais.eis.Connector;
-import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
-import io.dataspaceconnector.exceptions.InternalRecipientException;
-import io.dataspaceconnector.exceptions.TemporarilyNotAvailableException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import java.io.IOException;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.Objects;
+import com.tecnalia.datausage.service.SelfDescriptionService;
+
+import de.fraunhofer.iais.eis.Connector;
+import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import io.dataspaceconnector.exceptions.InternalRecipientException;
+import io.dataspaceconnector.exceptions.TemporarilyNotAvailableException;
 
 @Service
 public class SelfDescriptionServiceImpl implements SelfDescriptionService {
