@@ -25,10 +25,11 @@ import java.util.Optional;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import com.tecnalia.datausage.service.SelfDescriptionServiceImpl;
 import de.fraunhofer.iais.eis.Connector;
 import de.fraunhofer.iais.eis.SecurityProfile;
 import org.springframework.stereotype.Service;
+
+import com.tecnalia.datausage.service.impl.SelfDescriptionServiceImpl;
 
 import de.fraunhofer.iais.eis.Rule;
 import io.dataspaceconnector.exceptions.PolicyRestrictionException;
