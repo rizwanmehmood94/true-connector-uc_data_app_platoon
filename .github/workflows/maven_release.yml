@@ -21,18 +21,19 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-        cache: maven
+
     - name: Initialize mandatory git config
       run: |
         git config user.name "GitHub Actions"
         git config user.email noreply@github.com
 
-    - name: Install maven dependencies
-      run: ./ci/mavenDependency.sh     
     - name: ssh-agent
       uses: webfactory/ssh-agent@v0.7.0
       with:
         ssh-private-key: ${{ secrets.SSH_KEY }}
+
+    - name: Install maven dependencies
+      run: ./ci/mavenDependency.sh     
         
     - name: Release with Maven
       env:

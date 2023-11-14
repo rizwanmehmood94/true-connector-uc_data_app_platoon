@@ -5,7 +5,7 @@ LABEL maintainer="gabriele.deluca@eng.it"
 
 RUN apk add --no-cache openssl curl
 
-RUN mkdir -p /home/nobody/app && mkdir -p /home/nobody/data/log/ucapp
+RUN mkdir -p /home/nobody/app && mkdir -p /home/nobody/data/log/ucapp && mkdir -p /.sigstore
 RUN apk add --no-cache openssl curl cosign
 
 WORKDIR /home/nobody
@@ -16,7 +16,7 @@ COPY target/dependency-jars /home/nobody/app/dependency-jars
 # Add the application's jar to the container
 ADD target/dataUsage.jar /home/nobody/app/dataUsage.jar
 
-RUN chown -R nobody:nogroup /home/nobody
+RUN chown -R nobody:nogroup /home/nobody && chown -R nobody:nogroup /.sigstore
 
 USER 65534
 
