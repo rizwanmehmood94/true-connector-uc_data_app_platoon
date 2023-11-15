@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.8] - 2023-11-16
+
+### Changed
+ - cosign version upgrade with alpine image; must include --insecure-ignore-tlog flag
+ - changed classpath folder in pom from /etc to /config
+ 
 ## [1.7.6] - 2023-10-30
 
 ### Changed

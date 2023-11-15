@@ -62,7 +62,7 @@ services:
     ports:
       - "8180:8180"
     volumes:
-      - ./uc-dataapp_resources:/etc
+      - ./uc-dataapp_resources:/config
       - ./ecc_cert:/cert
       - uc_data:/data
  
