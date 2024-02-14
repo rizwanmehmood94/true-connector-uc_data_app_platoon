@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.9] - 2024-02-14
+
+### Changed
+
+ - rules and contract agreements are now AES-256 encrypted in the database
+
 ## [1.7.8] - 2023-11-16
 
 ### Changed
