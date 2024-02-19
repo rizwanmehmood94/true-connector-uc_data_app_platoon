@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
- - rules and contract agreements are now AES-256 encrypted in the database
+ - rules and contract agreements are now encrypted in the database using AES/GCM/NoPadding
+ - requires to set environment variable with AES256-SECRET-KEY used in encryption algorithm
 
 ## [1.7.8] - 2023-11-16
 
