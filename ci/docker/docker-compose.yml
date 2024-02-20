@@ -59,6 +59,7 @@ services:
       - KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}
       - ALIAS=${ALIAS}
       - TZ=Europe/Rome
+      - AES256-SECRET-KEY=somesecretkey
     ports:
       - "8180:8180"
     volumes:

@@ -6,13 +6,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tecnalia.datausage.utils.AES256;
 
 /**
  * ContractStore
  */
 /*
  * @Validated
- * @javax.annotation.Generated(value =  * "io.swagger.codegen.v3.generators.java.SpringCodegen", date = * "2021-03-29T07:44:48.999Z[GMT]")
+ * 
+ * @javax.annotation.Generated(value = *
+ * "io.swagger.codegen.v3.generators.java.SpringCodegen", date = *
+ * "2021-03-29T07:44:48.999Z[GMT]")
  */
 
 @Entity
@@ -20,6 +24,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 //@IdClass(RuleId.class)
 public class RuleStore {
 
+	@JsonProperty("contractUuid")
+	private String contractUuid;
+	
+	@Id
+	@JsonProperty("ruleUuid")
+	private String ruleUuid;
+	
+//  @JsonProperty("contractId")
+	private String contractId;
+	
+	// @JsonProperty("ruleId")
+	private String ruleId;
+	
+	// @JsonProperty("targetId")
+	private String targetId;
+	
+	// @JsonProperty("ruleContent")
+	@Column(columnDefinition = "TEXT")
+	private String ruleContent;
+	
 	/**
 	 * @return the contractUuid
 	 */
@@ -48,25 +72,6 @@ public class RuleStore {
 		this.ruleUuid = ruleUuid;
 	}
 
-	@JsonProperty("contractUuid")
-	private String contractUuid;
-
-	@Id
-	@JsonProperty("ruleUuid")
-	private String ruleUuid;
-
-//  @JsonProperty("contractId")
-	private String contractId;
-
-	// @JsonProperty("ruleId")
-	private String ruleId;
-
-	// @JsonProperty("targetId")
-	private String targetId;
-
-	// @JsonProperty("ruleContent")
-	@Column(columnDefinition = "TEXT")
-	private String ruleContent;
 
 	/**
 	 * @return the contractId
@@ -114,14 +119,14 @@ public class RuleStore {
 	 * @return the ruleAction
 	 */
 	public String getRuleContent() {
-		return ruleContent;
+		return AES256.decrypt(ruleContent);
 	}
 
 	/**
 	 * @param ruleContent the ruleContent to set
 	 */
 	public void setRuleContent(String ruleContent) {
-		this.ruleContent = ruleContent;
+		this.ruleContent = AES256.encrypt(ruleContent);
 	}
 
 }

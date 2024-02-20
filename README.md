@@ -11,8 +11,8 @@ This module does not include the Contract Negotiation process. This negotiation 
 
 The Data Usage Control is composed of the following components:
 -	Database store, where the Contract Agreements are stored. This database contains the following tables:
-    - Contract_store: the whole contract agreement content in JSON-LD format is stored in the “contract_as_string” column.
-    - Rule_store: a contract may contain several rules. Each of these rules is stored in this table and the rule content in JSON-LD format is stored in the "rule_content” column.
+    - Contract_store: the whole contract agreement content in JSON-LD format is stored in the “contract_as_string” column as an AES-256 encrypted string.
+    - Rule_store: a contract may contain several rules. Each of these rules is stored in this table and the rule content in JSON-LD format is stored in the "rule_content” column AES-256 encrypted string.
     -	Access_store: this table stores the number of times a consumer has accessed a specific target/data, in the “num_access” column. This table is used to apply the policy pattern “N Times Usage” 
  
 

@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tecnalia.datausage.utils.AES256;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -52,11 +53,11 @@ public class ContractStore {
 	@Schema(description = "")
 
 	public String getContractAsString() {
-		return contractAsString;
+		return AES256.decrypt(contractAsString);
 	}
 
 	public void setContractAsString(String contractAsString) {
-		this.contractAsString = contractAsString;
+		this.contractAsString = AES256.encrypt(contractAsString);
 	}
 
 	public ContractStore contractUuid(String contractUuid) {
