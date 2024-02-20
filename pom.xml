@@ -342,11 +342,11 @@
 	    </dependencies>
 	</dependencyManagement>
 
-<!--     <repositories> -->
-<!--         <repository> -->
-<!--         <id>snapshots</id> -->
-<!--         <name>maven-snapshots</name> -->
-<!--         <url>https://maven.iais.fraunhofer.de/artifactory/eis-ids-public</url> -->
-<!--         </repository> -->
-<!--     </repositories> -->
+	<repositories>
+		<repository>
+			<id>snapshots</id>
+			<name>maven-snapshots</name>
+			<url>https://jfrog.iais.fraunhofer.de/artifactory/public</url>
+		</repository>
+	</repositories>
 </project>

@@ -315,6 +315,8 @@ public class EnforcementService {
 					}
 				}
 			} catch (Exception e) {
+				LOGGER.error("Could not deserialize contract : {}", e.getMessage());
+				return null;
 			}
 		}
 		return validContractStore;
